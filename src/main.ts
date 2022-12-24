@@ -1,5 +1,8 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router';
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import 'amfe-flexible'
+//  引入组件样式
+import 'vant/lib/index.css'
 
-createApp(App).use(router).mount('#app');
+createApp(App).use(router).mount('#app')
