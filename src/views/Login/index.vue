@@ -13,14 +13,17 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { useEMLogin } from '@/EaseIM/hooks'
 import './index.scss'
 const loginParams = reactive({
     phoneNumber: '',
-    username: '',
-    password: '',
+    username: 'hfp',
+    password: '1',
     smsCode: '',
 })
+const { EMlogin } = useEMLogin()
 const loginEaseIM: () => void = () => {
+    EMlogin({ imId: loginParams.username, imPwd: loginParams.password, isCacheToken: true })
     console.log('>>>>登录环信')
 }
 </script>

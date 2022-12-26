@@ -10,6 +10,7 @@
     "dependencies": {
         "amfe-flexible": "^2.2.1",
         "core-js": "^3.8.3",
+        "easemob-websdk": "^4.1.2",
         "postcss": "^8.4.20",
         "postcss-pxtorem": "^6.0.0",
         "vant": "^4.0.4",

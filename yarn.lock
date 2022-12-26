@@ -2953,6 +2953,11 @@ duplexer@^0.1.2:
   resolved "https://registry.npmmirror.com/duplexer/-/duplexer-0.1.2.tgz"
   integrity sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==
 
+easemob-websdk@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.npmmirror.com/easemob-websdk/-/easemob-websdk-4.1.2.tgz#162c5784b006fe230fedc82c730f7c0068eb1786"
+  integrity sha512-0qqMsprSCLaZ+7tia8gfFhiV0L94YGD6TmY2SySPWnevle7UH8XqSzXNG8cUW7jIOJGe7hSffUw577ww40F6aA==
+
 easy-stack@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmmirror.com/easy-stack/-/easy-stack-1.0.1.tgz"
