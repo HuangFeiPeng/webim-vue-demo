@@ -16,6 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/home',
         name: 'home',
+        redirect: '/home/conversations',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
@@ -23,6 +24,32 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
             title: '首页',
         },
+        children: [
+            {
+                path: 'conversations',
+                name: 'conversations',
+                component: () => import('../views/Conversations/index.vue'),
+                meta: {
+                    title: '最近会话',
+                },
+            },
+            {
+                path: 'contacts',
+                name: 'contacts',
+                component: () => import('../views/Contacts/index.vue'),
+                meta: {
+                    title: '联系人',
+                },
+            },
+            {
+                path: 'me',
+                name: 'me',
+                component: () => import('../views/Me/index.vue'),
+                meta: {
+                    title: '我的',
+                },
+            },
+        ],
     },
 ]
 

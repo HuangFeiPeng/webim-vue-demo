@@ -1,14 +1,16 @@
 <template>
-    <div>Home页面</div>
-    <div>
-        <van-button class="login_btn" @click="logout" type="primary">退出登录</van-button>
+    <div class="app_container">
+        <!-- NavBar -->
+        <nav-bar />
+        <!-- Main -->
+        <router-view></router-view>
+        <!-- TabBar -->
+        <tab-bar />
     </div>
 </template>
 
 <script setup lang="ts">
-import { useEMLogin } from '@/EaseIM/hooks'
-const { EMlogout } = useEMLogin()
-const logout = () => EMlogout()
+import './index.scss'
+import NavBar from '@/layout/NavBar/index.vue'
+import TabBar from '@/layout/TabBar/index.vue'
 </script>
-
-<style scoped lang="scss"></style>
