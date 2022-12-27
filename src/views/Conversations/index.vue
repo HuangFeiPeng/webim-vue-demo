@@ -1,14 +1,19 @@
 <template>
     <div class="conversations_container">
-        <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <van-list
+            v-model:loading="loading"
+            :finished="finished"
+            :finished-text="$t('conversations.nomore')"
+            @load="onLoad"
+        >
             <van-swipe-cell v-for="item in list" :key="item">
                 <div class="conversation_item_box">
                     <img src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" alt="" />
                     <div></div>
                 </div>
                 <template #right>
-                    <van-button square type="warning" text="置顶" />
-                    <van-button square type="danger" text="删除" />
+                    <van-button square type="warning" :text="$t('conversations.swipeCellBtn.stick')" />
+                    <van-button square type="danger" :text="$t('conversations.swipeCellBtn.delete')" />
                 </template>
             </van-swipe-cell>
         </van-list>

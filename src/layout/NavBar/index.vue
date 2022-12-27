@@ -5,10 +5,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 const route = useRoute()
+const { t } = useI18n()
 const navBarTitle = computed(() => {
-    const title: string = route.meta.title as string
-    return title
+    const title: string = route.name as string
+    return t(`layout.navbar.${title}`)
 })
 </script>
 
