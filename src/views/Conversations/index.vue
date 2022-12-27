@@ -6,6 +6,8 @@
             :finished-text="$t('conversations.nomore')"
             @load="onLoad"
         >
+            <!-- 搜索组件 -->
+            <SearchInput />
             <van-swipe-cell v-for="item in list" :key="item">
                 <div class="conversation_item_box">
                     <img src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" alt="" />
@@ -22,6 +24,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import SearchInput from '@/components/SearchInput/index.vue'
 const list = ref<any>([])
 const loading = ref(false)
 const finished = ref(false)

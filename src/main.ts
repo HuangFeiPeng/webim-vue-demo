@@ -1,7 +1,20 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { Button, NavBar, Tabbar, TabbarItem, Cell, List, SwipeCell, Field, CellGroup } from 'vant'
+import {
+    Icon,
+    Button,
+    Popover,
+    NavBar,
+    Search,
+    Tabbar,
+    TabbarItem,
+    Cell,
+    List,
+    SwipeCell,
+    Field,
+    CellGroup,
+} from 'vant'
 /* i18n */
 import i18n from './i18n'
 import 'amfe-flexible'
@@ -12,7 +25,18 @@ const app = createApp(App)
 /* router */
 app.use(router)
 /* vant */
-app.use(Button).use(NavBar).use(Tabbar).use(TabbarItem).use(Cell).use(List).use(SwipeCell).use(Field).use(CellGroup)
+app.use(Icon)
+    .use(Popover)
+    .use(Button)
+    .use(NavBar)
+    .use(Search)
+    .use(Tabbar)
+    .use(TabbarItem)
+    .use(Cell)
+    .use(List)
+    .use(SwipeCell)
+    .use(Field)
+    .use(CellGroup)
 /* i18n */
 app.use(i18n)
 app.mount('#app')

@@ -31,6 +31,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('../views/Conversations/index.vue'),
                 meta: {
                     title: '最近会话',
+                    needNavBar: true,
                 },
             },
             {
@@ -39,6 +40,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('../views/Contacts/index.vue'),
                 meta: {
                     title: '联系人',
+                    needNavBar: true,
                 },
             },
             {
@@ -47,6 +49,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('../views/Me/index.vue'),
                 meta: {
                     title: '我的',
+                    needNavBar: false,
                 },
             },
         ],
