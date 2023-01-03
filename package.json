@@ -11,6 +11,8 @@
         "amfe-flexible": "^2.2.1",
         "core-js": "^3.8.3",
         "easemob-websdk": "^4.1.2",
+        "lodash": "^4.17.21",
+        "pinia": "^2.0.28",
         "postcss": "^8.4.20",
         "postcss-pxtorem": "^6.0.0",
         "vant": "^4.0.4",
@@ -19,6 +21,7 @@
         "vue-router": "^4.0.3"
     },
     "devDependencies": {
+        "@types/lodash": "^4.14.191",
         "@typescript-eslint/eslint-plugin": "^5.4.0",
         "@typescript-eslint/parser": "^5.4.0",
         "@vue/cli-plugin-babel": "~5.0.0",

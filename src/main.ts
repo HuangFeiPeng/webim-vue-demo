@@ -1,6 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+/* stores */
+import { createPinia } from 'pinia'
+/* router */
 import router from './router'
+
+/* vant components */
 import {
     Icon,
     Button,
@@ -14,6 +19,7 @@ import {
     SwipeCell,
     Field,
     CellGroup,
+    Badge,
 } from 'vant'
 /* i18n */
 import i18n from './i18n'
@@ -22,6 +28,9 @@ import 'amfe-flexible'
 import 'vant/lib/index.css'
 
 const app = createApp(App)
+const pinia = createPinia()
+/* pinia */
+app.use(pinia)
 /* router */
 app.use(router)
 /* vant */
@@ -37,6 +46,7 @@ app.use(Icon)
     .use(SwipeCell)
     .use(Field)
     .use(CellGroup)
+    .use(Badge)
 /* i18n */
 app.use(i18n)
 app.mount('#app')

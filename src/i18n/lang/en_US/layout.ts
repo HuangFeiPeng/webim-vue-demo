@@ -8,8 +8,8 @@ export default {
         back: 'back',
     },
     tabbar: {
-        conversations: 'conversations',
-        contacts: 'contacts',
-        me: 'me',
+        conversations: 'Conversations',
+        contacts: 'Contacts',
+        me: 'Me',
     },
 }

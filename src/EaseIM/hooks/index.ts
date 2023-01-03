@@ -1,3 +1,4 @@
 import { useEMLogin } from './useEMLogin'
 import { useEMConnectListener } from './useEMConnectListener'
-export { useEMLogin, useEMConnectListener }
+import { useFetchConversation } from './useFetchConversation'
+export { useEMLogin, useEMConnectListener, useFetchConversation }
