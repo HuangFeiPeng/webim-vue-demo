@@ -21,7 +21,7 @@
                             {{ handleLastMsgPreview(item) }}
                         </p>
                     </div>
-                    <div class="chat_infor_right">11:10</div>
+                    <div class="chat_infor_right">{{ handleLastMsgTime(item) }}</div>
                 </div>
                 <template #right>
                     <div class="conversation_swipe_right">
@@ -58,7 +58,10 @@ import { LAST_MSG_PREVIEW } from '@/constants/im'
 import { useFetchConversation } from '@/EaseIM/hooks'
 import SearchInput from '@/components/SearchInput/index.vue'
 import { ConversationBody, ConversationChatType } from '@/EaseIM/types/conversations'
-
+/* dayjs */
+import Dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+Dayjs.extend(relativeTime)
 /* 会话列表逻辑相关 */
 const conversationStore = useConversationStore()
 const conversationList = computed(() => {
@@ -144,6 +147,20 @@ const handleLastMsgPreview = computed(() => {
             return '[自定义类型消息]'
         } else {
             return item.lastMessage.msg
+        }
+    }
+})
+
+/* 处理会话时间展示 */
+
+const handleLastMsgTime = computed(() => {
+    return (item: ConversationBody) => {
+        const currentTime = Dayjs()
+        //使用Dayjs库比对当前时间与消息发送时间大于24小时展示不同的时间格式
+        if (Dayjs(currentTime).diff(item.time, 'hour') < 24) {
+            return Dayjs(item.time).format('hh:m(a)')
+        } else {
+            return Dayjs(item.time).format('YYYY/MM/DD')
         }
     }
 })

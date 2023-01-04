@@ -11,6 +11,7 @@
         "@vueuse/core": "^9.9.0",
         "amfe-flexible": "^2.2.1",
         "core-js": "^3.8.3",
+        "dayjs": "^1.11.7",
         "easemob-websdk": "^4.1.2",
         "lodash": "^4.17.21",
         "pinia": "^2.0.28",
