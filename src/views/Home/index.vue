@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useEMMessagesListener } from '@/EaseIM/hooks'
 import './index.scss'
 import NavBar from '@/layout/NavBar/index.vue'
 import TabBar from '@/layout/TabBar/index.vue'
@@ -25,4 +26,7 @@ const isShowNavBar = computed(() => {
 const onClickRightBtn = () => {
     console.log('>>>>>点击了右侧按钮')
 }
+
+/* EaseIM Listener */
+useEMMessagesListener()
 </script>

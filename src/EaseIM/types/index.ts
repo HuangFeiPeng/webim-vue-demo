@@ -1,2 +1,10 @@
-import { EaseIMChatType } from '@/constants/im'
-export type ChatType = EaseIMChatType.SINGLECHAT | EaseIMChatType.GROUPCHAT
+import { EasemobChat } from '@/EaseIM'
+export type EMMessageBody =
+    | EasemobChat.TextMsgBody
+    | EasemobChat.ImgMsgBody
+    | EasemobChat.FileMsgBody
+    | EasemobChat.CmdMsgBody
+    | EasemobChat.LocationMsgBody
+    | EasemobChat.AudioMsgBody
+    | EasemobChat.CustomMsgBody
+    | EasemobChat.VideoMsgBody

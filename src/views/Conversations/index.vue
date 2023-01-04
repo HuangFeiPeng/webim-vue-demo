@@ -12,25 +12,36 @@
                 <div class="conversation_item_box">
                     <div class="avatar_box">
                         <van-badge :content="item.unReadNum" max="99" :show-zero="false">
-                            <img
-                                class="avatar_box_img"
-                                src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-                                alt=""
-                            />
+                            <img class="avatar_box_img" :src="mapConversationsInfo(item)?.avatarUrl" alt="" />
                         </van-badge>
                     </div>
                     <div class="chat_infor_main">
-                        <p class="name">{{ item.id }}</p>
+                        <p class="name">{{ mapConversationsInfo(item)?.name }}</p>
                         <p class="last_msg">
-                            {{ item.lastMessage.msg || item.lastMessage.url }}
+                            {{ handleLastMsgPreview(item) }}
                         </p>
                     </div>
                     <div class="chat_infor_right">11:10</div>
                 </div>
                 <template #right>
                     <div class="conversation_swipe_right">
-                        <van-button square type="warning" :text="$t('conversations.swipeCellBtn.stick')" />
-                        <van-button square type="danger" :text="$t('conversations.swipeCellBtn.delete')" />
+                        <van-button
+                            square
+                            :type="item.isStick ? 'primary' : 'warning'"
+                            :text="
+                                item.isStick
+                                    ? $t('conversations.swipeCellBtn.unstick')
+                                    : $t('conversations.swipeCellBtn.stick')
+                            "
+                            @click="stickTheChat(item.id, item.isStick)"
+                        />
+
+                        <van-button
+                            square
+                            type="danger"
+                            :text="$t('conversations.swipeCellBtn.delete')"
+                            @click="deleteTheChat(item.id, item.chatType)"
+                        />
                     </div>
                 </template>
             </van-swipe-cell>
@@ -41,16 +52,26 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 /* pinia */
-import { useConversationStore } from '@/stores'
+import { useConversationStore, useContactsStore, useGroupsStore } from '@/stores'
 /* IM */
+import { LAST_MSG_PREVIEW } from '@/constants/im'
 import { useFetchConversation } from '@/EaseIM/hooks'
 import SearchInput from '@/components/SearchInput/index.vue'
-//会话列表
-const store = useConversationStore()
-const conversationList = computed(() => {
-    return store.getConversationListvalues
-})
+import { ConversationBody, ConversationChatType } from '@/EaseIM/types/conversations'
 
+/* 会话列表逻辑相关 */
+const conversationStore = useConversationStore()
+const conversationList = computed(() => {
+    let reorderConversations: ConversationBody[] = []
+    conversationStore.getConversationListvalues.forEach((item) => {
+        if (item.isStick) {
+            reorderConversations.unshift(item)
+        } else {
+            reorderConversations.push(item)
+        }
+    })
+    return reorderConversations
+})
 //下拉加载更多数据
 const loading = ref(false)
 const finished = ref(false)
@@ -74,6 +95,58 @@ const onLoadConversations = async () => {
 
     console.log('>>>>>加载一下')
 }
+
+//处理置顶会话
+const stickTheChat = (targetId: string, isStick: boolean | undefined) => {
+    if (isStick) {
+        conversationStore.handleStickList('UNSTICK', targetId)
+    } else {
+        conversationStore.handleStickList('STICK', targetId)
+    }
+}
+//删除会话
+const deleteTheChat = (targetId: string, chatType: ConversationChatType) => {
+    console.log('>>>>>>调用删除会话操作')
+    conversationStore.deleteConversation(targetId, chatType)
+}
+/* 映射会话对应的属性 */
+const defaultAvatarUrl = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
+const contactsStore = useContactsStore()
+const groupsStore = useGroupsStore()
+const mapConversationsInfo = computed(() => {
+    const contacts = contactsStore.contacts
+    const groups = groupsStore.groups
+    return (item: ConversationBody) => {
+        if (item.chatType === 'singleChat') {
+            return {
+                name: contacts[item.id]?.nickname || contacts[item.id].hxId,
+                avatarUrl: contacts[item.id]?.avatarurl || defaultAvatarUrl,
+            }
+        }
+        if (item.chatType === 'groupChat') {
+            return {
+                name:
+                    groups[item.id]?.groupInfo?.name ||
+                    groups[item.id]?.groupInfo?.groupName ||
+                    groups[item.id].groupid,
+                avatarUrl: defaultAvatarUrl,
+            }
+        }
+    }
+})
+
+/* 处理最后一条消息展示 */
+const handleLastMsgPreview = computed(() => {
+    return (item: ConversationBody) => {
+        if (LAST_MSG_PREVIEW[item.lastMessage.type]) {
+            return LAST_MSG_PREVIEW[item.lastMessage.type]
+        } else if (item.lastMessage.type === 'custom') {
+            return '[自定义类型消息]'
+        } else {
+            return item.lastMessage.msg
+        }
+    }
+})
 </script>
 <style lang="scss" scoped>
 @import './index.scss';

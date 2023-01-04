@@ -1,11 +1,13 @@
-import { ChatType } from './index'
-export type ConversationFromType = 'LOCAL' | 'EASEAPI'
+import { EaseIMChatType } from '@/constants/im'
+export type ConversationChatType = 'singleChat' | 'groupChat'
 export interface ConversationBody {
     id: string
     unReadNum: number
     msgFrom: string | undefined
     msgTo: string
-    chatType: ChatType
+    chatType: ConversationChatType
     lastMessage: any
     time: string | number
+    isStick?: boolean
 }
+export type HandleStickType = 'STICK' | 'UNSTICK'

@@ -1,3 +1,5 @@
+import { useLoginStore } from './login'
 import { useConversationStore } from './conversations'
-
-export { useConversationStore }
+import { useContactsStore } from './contacts'
+import { useGroupsStore } from './groups'
+export { useLoginStore, useConversationStore, useContactsStore, useGroupsStore }
