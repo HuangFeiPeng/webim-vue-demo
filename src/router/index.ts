@@ -1,5 +1,13 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+import { useLoginStore } from '@/stores'
+NProgress.configure({
+    speed: 200,
+    minimum: 0.02,
+    trickleSpeed: 200,
+    showSpinner: false,
+})
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
@@ -60,5 +68,19 @@ const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
 })
-
+//登录校验
+router.beforeEach((to, from, next) => {
+    NProgress.start()
+    const loginStore = useLoginStore()
+    if (to.name !== 'login' && !loginStore.isLogined) {
+        next({ path: '/' })
+    } else {
+        next()
+    }
+})
+router.afterEach(() => {
+    if (NProgress.isStarted()) {
+        NProgress.done()
+    }
+})
 export default router

@@ -97,7 +97,7 @@ export const useConversationStore = defineStore('conversationStore', {
         },
         //置顶会话或取消置顶
         handleStickList(type: HandleStickType, targetId: string) {
-            const cacheStickList = useLocalStorage<string[]>(`${EChatClient.user}_${STICK_LIST}`, [])
+            const cacheStickList = useLocalStorage<string[]>(`EM_${EChatClient.user}_${STICK_LIST}`, [])
             if (type === 'STICK') {
                 console.log('>>>>>置顶')
                 cacheStickList.value.push(targetId)

@@ -1,4 +1,5 @@
 export default {
+    yesterday: '昨天',
     nomore: '我也是有底线的',
     swipeCellBtn: {
         stick: '置顶',

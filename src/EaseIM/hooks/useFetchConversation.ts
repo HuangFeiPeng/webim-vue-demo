@@ -11,22 +11,33 @@ export const useFetchConversation = () => {
     const groupsStore = useGroupsStore()
     //TODO 后续会话列表支持分页，预留params 应对后续可传参数使用
     const fetchConversionList = async (params: FetchConversationsParams) => {
-        try {
+        return new Promise<any[]>(async (resolve, reject) => {
             //TODO 目前getConversationlist 返回类型有问题待后续SDK优化，短期用any解决。
-            const res: any = await EChatClient.getConversationlist()
-            const resultList = res?.data?.channel_infos
-            const groupSessionList: string[] = []
-            resultList.length &&
-                resultList.forEach((channel: any) => {
-                    console.log('>>>>>>>', channel)
-                    if (channel.lastMessage.chatType === 'groupchat') {
-                        const groupId = channel.lastMessage.to
-                        groupSessionList.push(groupId)
-                    }
-                    conversationStore.createConversation({ ...channel })
+            EChatClient.getConversationlist()
+                .then((res: any) => {
+                    const resultList = res?.data?.channel_infos
+                    const groupSessionList: string[] = []
+                    resultList.length &&
+                        resultList.forEach((channel: any) => {
+                            /**
+                             * 如果会话类型为群组则单独获取群组的详情，
+                             * 从而匹配展示群组昵称【不通过群组列表匹配是因为，
+                             * 单页最大获取20条，会话中有可能从在不在20条之内会话】
+                             */
+                            if (channel.lastMessage.chatType === 'groupchat') {
+                                const groupId = channel.lastMessage.to
+                                groupSessionList.push(groupId)
+                            }
+                            conversationStore.createConversation({ ...channel })
+                        })
+                    groupsStore.fetchGroupsInfos(groupSessionList)
+                    resolve(res?.data?.channel_infos)
                 })
-            groupsStore.fetchGroupsInfos(groupSessionList)
-        } catch (error) {}
+                .catch((error) => {
+                    console.log('>>>>会话拉取失败', error)
+                    reject(error)
+                })
+        })
     }
     return {
         fetchConversionList,

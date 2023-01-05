@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 /* pinia */
 import { useConversationStore, useContactsStore, useGroupsStore } from '@/stores'
 /* IM */
@@ -84,19 +85,18 @@ const { fetchConversionList } = useFetchConversation()
 const onLoadConversations = async () => {
     try {
         if (conversationList.value.length) {
-            console.log('>>>>忽略')
+            return (finished.value = false)
         } else {
+            console.log('>>>>>>调用接口拉取会话列表')
             console.log('conversationList', conversationList.value.length)
-            await fetchConversionList({ pageNum: pageNum.value, pageSize: pageSize.value })
+            let res = await fetchConversionList({ pageNum: pageNum.value, pageSize: pageSize.value })
+            if (!res.length) return (finished.value = true)
         }
     } catch (error) {
         console.log('>>>>>>> Error')
     } finally {
         loading.value = false
-        finished.value = true
     }
-
-    console.log('>>>>>加载一下')
 }
 
 //处理置顶会话
@@ -152,13 +152,16 @@ const handleLastMsgPreview = computed(() => {
 })
 
 /* 处理会话时间展示 */
-
+const { t } = useI18n()
 const handleLastMsgTime = computed(() => {
     return (item: ConversationBody) => {
         const currentTime = Dayjs()
         //使用Dayjs库比对当前时间与消息发送时间大于24小时展示不同的时间格式
-        if (Dayjs(currentTime).diff(item.time, 'hour') < 24) {
-            return Dayjs(item.time).format('hh:m(a)')
+        if (Dayjs(currentTime).diff(item.time, 'hour') < 12) {
+            return Dayjs(item.time).format('HH:mm(a)')
+        }
+        if (Dayjs(currentTime).diff(item.time, 'hour') <= 24) {
+            return Dayjs(item.time).format(`${t('conversations.yesterday')}HH:mm(a)`)
         } else {
             return Dayjs(item.time).format('YYYY/MM/DD')
         }
