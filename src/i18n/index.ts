@@ -21,7 +21,7 @@ const i18n = createI18n({
     legacy: false,
     silentTranslationWarn: true,
     // 默认语言
-    locale: localStorage.getItem(I18N_CACHE_NAME) || mapMessages[localLocale] || 'en_US',
+    locale: localStorage.getItem(I18N_CACHE_NAME) || mapMessages[localLocale] || 'zh_CN',
 })
 
 export default i18n

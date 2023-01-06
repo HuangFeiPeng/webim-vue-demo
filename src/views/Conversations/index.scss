@@ -1,13 +1,13 @@
 .conversations_container{
     width: 100%;
     height: 100%;
+
 }
 .conversation_item_box{
     padding:0 15px;
     display:flex;
     flex-direction: row;
     align-items: center;
-    background: #f3f3f3;
     .avatar_box{
         width: 80px;
         height: 80px;

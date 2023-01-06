@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { EChatClient, EasemobChat } from '@/EaseIM'
 import _ from 'lodash'
+import { pinyin } from 'pinyin-pro'
+
 interface Contacts extends EasemobChat.UpdateOwnUserInfoParams {
     hxId: string
 }
@@ -9,13 +11,46 @@ interface State {
         [index: string]: Contacts
     }
 }
+interface MapKey {
+    [key: string]: Contacts[]
+}
 export const useContactsStore = defineStore('contactsStore', {
     state: (): State => {
         return {
             contacts: {},
         }
     },
-    getters: {},
+    getters: {
+        getSortPinyinFriendItem: (state) => {
+            const resultObj: MapKey = {}
+            const containerObj: MapKey = {}
+            for (const key in state.contacts) {
+                if (Object.hasOwnProperty.call(state.contacts, key)) {
+                    const v = state.contacts[key]
+                    let pinyinKey = (
+                        v.nickname
+                            ? pinyin(v.nickname, { pattern: 'initial' })[0]
+                            : pinyin(v.hxId, { pattern: 'initial' })[0]
+                    ).toUpperCase()
+                    //不适用于拼音规则的转换会为空，因此替换为#展示。
+                    if (pinyinKey === ' ') {
+                        pinyinKey = '#'
+                    }
+                    if (containerObj[pinyinKey]) {
+                        containerObj[pinyinKey].push(v)
+                    } else {
+                        containerObj[pinyinKey] = []
+                        containerObj[pinyinKey].push(v)
+                    }
+                }
+            }
+            const resultObjKeys = _.sortBy(_.keys(containerObj))
+            resultObjKeys.forEach((a) => {
+                resultObj[a] = containerObj[a]
+            })
+            return resultObj
+        },
+    },
     actions: {
         //获取用户好友列表
         async fetchContactsData(needMetadata: boolean) {

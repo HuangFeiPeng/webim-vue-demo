@@ -20,7 +20,11 @@ import {
     Field,
     CellGroup,
     Badge,
+    IndexBar,
+    IndexAnchor,
+    Divider,
 } from 'vant'
+import { Image as VanImage } from 'vant'
 /* i18n */
 import i18n from './i18n'
 import 'amfe-flexible'
@@ -47,6 +51,10 @@ app.use(Icon)
     .use(Field)
     .use(CellGroup)
     .use(Badge)
+    .use(VanImage)
+    .use(IndexBar)
+    .use(IndexAnchor)
+    .use(Divider)
 /* i18n */
 app.use(i18n)
 app.mount('#app')

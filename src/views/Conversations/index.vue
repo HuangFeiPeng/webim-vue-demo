@@ -9,7 +9,7 @@
             <!-- 搜索组件 -->
             <SearchInput />
             <van-swipe-cell v-for="item in conversationList" :key="item.id">
-                <div class="conversation_item_box">
+                <div class="van-haptics-feedback conversation_item_box">
                     <div class="avatar_box">
                         <van-badge :content="item.unReadNum" max="99" :show-zero="false">
                             <img class="avatar_box_img" :src="mapConversationsInfo(item)?.avatarUrl" alt="" />
