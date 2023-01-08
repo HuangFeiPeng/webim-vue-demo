@@ -40,6 +40,7 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     title: '最近会话',
                     needNavBar: true,
+                    needTabBar: true,
                 },
             },
             {
@@ -49,6 +50,7 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     title: '联系人',
                     needNavBar: true,
+                    needTabBar: true,
                 },
             },
             {
@@ -58,6 +60,17 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     title: '我的',
                     needNavBar: false,
+                    needTabBar: true,
+                },
+            },
+            {
+                path: 'chat',
+                name: 'chat',
+                component: () => import('../views/Chat/index.vue'),
+                meta: {
+                    title: '聊天',
+                    needNavBar: false,
+                    needTabBar: false,
                 },
             },
         ],

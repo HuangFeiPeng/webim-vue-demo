@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { EChatClient } from '@/EaseIM'
+import { EChatSDK, EChatClient, EasemobChat } from '@/EaseIM'
 import { getEMKey } from '@/utils'
 import { EaseIMChatType, STICK_LIST } from '@/constants/im'
 import { EMMessageBody } from '@/EaseIM/types'
@@ -141,5 +141,19 @@ export const useConversationStore = defineStore('conversationStore', {
             })
         },
         //已读会话
+        readedConversation(targetId: string, chatType: ConversationChatType) {
+            const option: EasemobChat.CreateChannelMsgParameters = {
+                chatType: chatType, // 会话类型，设置为单聊。
+                type: 'channel', // 消息类型。
+                to: targetId, // 接收消息对象的用户 ID。
+            }
+            const msg = EChatSDK.message.create(option)
+            EChatClient.send(msg)
+            const isHasConversation = this.$state.conversationList.has(targetId)
+            if (isHasConversation) {
+                const toClearUnReadNum = this.$state.conversationList.get(targetId)
+                toClearUnReadNum?.unReadNum && (toClearUnReadNum.unReadNum = 0)
+            }
+        },
     },
 })

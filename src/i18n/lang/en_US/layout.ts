@@ -5,6 +5,7 @@ export default {
         conversations: 'Recent Conversation',
         contacts: 'Contacts',
         me: 'Me',
+        chat: 'Chats',
         back: 'back',
     },
     tabbar: {

@@ -9,7 +9,7 @@
     width:100%;
     // height:500px;
 }
-::v-deep .van-cell{
+:deep(.van-cell) {
     display:flex;
     align-items:center;
 }

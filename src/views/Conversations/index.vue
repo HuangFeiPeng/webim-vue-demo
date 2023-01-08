@@ -9,7 +9,7 @@
             <!-- 搜索组件 -->
             <SearchInput />
             <van-swipe-cell v-for="item in conversationList" :key="item.id">
-                <div class="van-haptics-feedback conversation_item_box">
+                <div class="van-haptics-feedback conversation_item_box" @click="enterTheChatPage(item)">
                     <div class="avatar_box">
                         <van-badge :content="item.unReadNum" max="99" :show-zero="false">
                             <img class="avatar_box_img" :src="mapConversationsInfo(item)?.avatarUrl" alt="" />
@@ -54,6 +54,8 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 /* pinia */
 import { useConversationStore, useContactsStore, useGroupsStore } from '@/stores'
+/* vue-router */
+import { useRouter } from 'vue-router'
 /* IM */
 import { LAST_MSG_PREVIEW } from '@/constants/im'
 import { useFetchConversation } from '@/EaseIM/hooks'
@@ -63,6 +65,7 @@ import { ConversationBody, ConversationChatType } from '@/EaseIM/types/conversat
 import Dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 Dayjs.extend(relativeTime)
+
 /* 会话列表逻辑相关 */
 const conversationStore = useConversationStore()
 const conversationList = computed(() => {
@@ -167,6 +170,19 @@ const handleLastMsgTime = computed(() => {
         }
     }
 })
+
+/* 进入聊天界面 */
+const router = useRouter()
+const enterTheChatPage = (chatParams: ConversationBody) => {
+    console.log('>>>>>>chatParams', chatParams)
+    const { id, chatType, unReadNum } = chatParams
+    const targetId = id
+    //如果该会话未读数大于0则发送已读会话，并会清除服务端记录的该会话未读数。
+    if (unReadNum > 0) {
+        conversationStore.readedConversation(targetId, chatType)
+    }
+    router.push({ name: 'chat', query: { id, chatType } })
+}
 </script>
 <style lang="scss" scoped>
 @import './index.scss';

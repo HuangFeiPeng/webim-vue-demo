@@ -6,12 +6,12 @@
 .contacts_header_box{
     width: 100%;
 }
-::v-deep .van-cell{
+:deep(.van-cell) {
     display:flex;
     flex-direction: row;
     align-items: center;
 }
-::v-deep .van-cell__title{
+:deep(.van-cell__title) {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;

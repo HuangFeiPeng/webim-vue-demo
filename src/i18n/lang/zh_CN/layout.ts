@@ -6,6 +6,7 @@ export default {
         contacts: '联系人',
         me: '我的',
         back: '返回',
+        chat: '聊天',
     },
     tabbar: {
         conversations: '会话',
