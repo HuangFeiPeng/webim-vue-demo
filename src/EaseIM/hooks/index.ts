@@ -2,4 +2,13 @@ import { useEMLogin } from './useEMLogin'
 import { useEMConnectListener } from './useEMConnectListener'
 import { useEMMessagesListener } from './useEMMessagesListener'
 import { useFetchConversation } from './useFetchConversation'
-export { useEMLogin, useEMConnectListener, useEMMessagesListener, useFetchConversation }
+import { useFetchHistoryMessages } from './useFetchHistoryMessages'
+import { useSendDisplayMsg } from './useSendDisplayMsg'
+export {
+    useEMLogin,
+    useEMConnectListener,
+    useEMMessagesListener,
+    useFetchConversation,
+    useFetchHistoryMessages,
+    useSendDisplayMsg,
+}

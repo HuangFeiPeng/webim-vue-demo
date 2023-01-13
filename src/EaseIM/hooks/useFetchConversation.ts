@@ -1,3 +1,4 @@
+/* 从环信服务器获取会话列表 */
 import { EChatClient } from '../index'
 import { useConversationStore, useGroupsStore } from '@/stores'
 

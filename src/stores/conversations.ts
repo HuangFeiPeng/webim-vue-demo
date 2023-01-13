@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { EChatSDK, EChatClient, EasemobChat } from '@/EaseIM'
 import { getEMKey } from '@/utils'
 import { EaseIMChatType, STICK_LIST } from '@/constants/im'
-import { EMMessageBody } from '@/EaseIM/types'
+import { EMMsgType, EMCreateMsgBodyType } from '@/EaseIM/types/messages'
 import { ConversationBody, HandleStickType, ConversationChatType } from '@/EaseIM/types/conversations'
 import _ from 'lodash'
 import { useLocalStorage } from '@vueuse/core'
@@ -16,6 +16,7 @@ interface ChannleBody {
     lastMessage?: any
     unread_num?: number
 }
+type UpdateConversationParams = EMMsgType | EMCreateMsgBodyType
 const packageConversationBody = (params: ChannleBody) => {
     const resultBody: ConversationBody = {
         id: '',
@@ -68,7 +69,7 @@ export const useConversationStore = defineStore('conversationStore', {
             resultBody && this.$state.conversationList.set(resultBody.id, resultBody)
         },
         //更新会话列表数据
-        updateConversation(message: EMMessageBody) {
+        updateConversation(message: UpdateConversationParams) {
             const { from, to, chatType, time } = message
             const key = getEMKey(EChatClient.user, from || EChatClient.user, to, chatType)
             const isHasConversation = this.$state.conversationList.has(key)

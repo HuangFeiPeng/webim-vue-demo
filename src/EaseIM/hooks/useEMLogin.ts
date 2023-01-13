@@ -1,3 +1,4 @@
+/* 环信与服务器建立回调方法 */
 import { EChatClient } from '../index'
 import { IloginOptions } from '../types/login'
 export const useEMLogin = () => {

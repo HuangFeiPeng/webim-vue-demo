@@ -1,6 +1,6 @@
 <template>
     <van-tabbar route placeholder>
-        <van-tabbar-item replace to="/home/conversations" icon="chat-o" badge="3">{{
+        <van-tabbar-item replace to="/home/conversations" icon="chat-o" :badge="badge">{{
             $t('layout.tabbar.conversations')
         }}</van-tabbar-item>
         <van-tabbar-item replace to="/home/contacts" icon="friends-o">{{
@@ -10,6 +10,13 @@
     </van-tabbar>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+interface Props {
+    badge: string | number
+}
+withDefaults(defineProps<Props>(), {
+    badge: '', //默认为空不展示badge，存在数字则进行数字展示
+})
+</script>
 
 <style scoped></style>

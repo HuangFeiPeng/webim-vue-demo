@@ -1,3 +1,4 @@
+/* 环信连接相关监听回调 */
 import { onBeforeMount, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { EChatClient } from '../index'

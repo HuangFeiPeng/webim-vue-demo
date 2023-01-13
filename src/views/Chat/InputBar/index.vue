@@ -1,11 +1,26 @@
 <template>
     <div class="input_bar_container">
-        <search-input />
+        {{ msgSendStatus }}
+        <van-button @click="sendTextTypeMsg">发送消息</van-button>
     </div>
 </template>
 
 <script setup lang="ts">
-import SearchInput from '@/components/SearchInput/index.vue'
+import { useSendDisplayMsg } from '@/EaseIM/hooks'
+import { EMCreateMsgBodyType } from '@/EaseIM/types/messages'
+const { msgSendStatus, actionSendMessages } = useSendDisplayMsg()
+const sendTextTypeMsg = () => {
+    msgSendStatus.value = 'sending'
+    // const msgBody: EMCreateMsgBodyType = {
+    //     type: 'txt',
+    //     to: 'pfh',
+    //     from: 'hfp',
+    //     msg: 'hahhahah',
+    //     chatType: 'singleChat',
+    //     time: Date.now(),
+    // }
+    // actionSendMessages(msgBody)
+}
 </script>
 
 <style lang="scss" scoped>

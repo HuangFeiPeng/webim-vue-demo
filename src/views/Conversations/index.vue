@@ -125,7 +125,7 @@ const mapConversationsInfo = computed(() => {
     return (item: ConversationBody) => {
         if (item.chatType === 'singleChat') {
             return {
-                name: contacts[item.id]?.nickname || contacts[item.id].hxId,
+                name: contacts[item.id]?.nickname || contacts[item.id].hxId || item.id,
                 avatarUrl: contacts[item.id]?.avatarurl || defaultAvatarUrl,
             }
         }
@@ -134,7 +134,8 @@ const mapConversationsInfo = computed(() => {
                 name:
                     groups[item.id]?.groupInfo?.name ||
                     groups[item.id]?.groupInfo?.groupName ||
-                    groups[item.id].groupid,
+                    groups[item.id].groupid ||
+                    item.id,
                 avatarUrl: defaultAvatarUrl,
             }
         }

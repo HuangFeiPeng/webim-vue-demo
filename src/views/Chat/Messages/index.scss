@@ -1,0 +1,23 @@
+.messages_container {
+    width: 100%;
+    height: calc(100% - 190px);
+    background: blue;
+    overflow-y: scroll;
+}
+.myMsgbox{
+    display: flex;
+    flex-direction:row-reverse;
+    justify-content: flex-start;
+}
+.otherMsgbox{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.messages_box{
+    width: 100%;
+    min-height: 100px;
+    background: pink;
+    
+}
+

@@ -16,4 +16,5 @@ export const LAST_MSG_PREVIEW: LastMsgPreview = {
     file: '[文件消息]',
     loc: '[位置消息]',
     audio: '[语音消息]',
+    video: '[视频消息]',
 }
