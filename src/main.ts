@@ -24,6 +24,7 @@ import {
     IndexAnchor,
     Divider,
     PullRefresh,
+    Toast,
 } from 'vant'
 import { Image as VanImage } from 'vant'
 /* i18n */
@@ -57,6 +58,7 @@ app.use(Icon)
     .use(IndexAnchor)
     .use(Divider)
     .use(PullRefresh)
+    .use(Toast)
 /* i18n */
 app.use(i18n)
 app.mount('#app')

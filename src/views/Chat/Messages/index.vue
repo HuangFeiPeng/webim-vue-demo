@@ -1,24 +1,26 @@
 <template>
     <van-pull-refresh class="messages_container" v-model="historyMsgLoading" @refresh="onRefresh">
-        <div class="messages_box" v-for="(msg, index) in messagesList" :key="msg.time">
-            <div class="messages_box_items" :class="[isMyself(msg) ? 'myMsgbox' : 'otherMsgbox']">
-                <van-image width="50" height="50" src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-                <div v-if="msg.type === 'txt'">
-                    {{ msg.msg }}
-                </div>
-                <div v-if="msg.type === 'img'">
-                    <van-image
-                        :width="msg.width && msg.width / 30"
-                        :height="msg.height && msg.height / 30"
-                        :src="msg.thumb || msg.url + '?thumbnail=true'"
-                    />
-                </div>
-                <div v-if="msg.type === 'audio'" @click="startplayAudio(msg, index)">音频</div>
-                <div id="wrapper" v-if="msg.type === 'video'">
-                    <video-wrapper :video-url="msg.url" :el-id="`_${msg.id}`" />
-                </div>
-                <div v-if="msg.type === 'file'">
-                    <p @click="downLoadFile(msg)">下载文件</p>
+        <div class="messages_list">
+            <div class="messages_box" v-for="(msg, index) in messagesList" :key="msg.time">
+                <div class="messages_box_items" :class="[isMyself(msg) ? 'myMsgbox' : 'otherMsgbox']">
+                    <van-image width="50" height="50" src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+                    <div v-if="msg.type === 'txt'">
+                        {{ msg.msg }}
+                    </div>
+                    <div v-if="msg.type === 'img'">
+                        <van-image
+                            :width="msg.width && msg.width / 30"
+                            :height="msg.height && msg.height / 30"
+                            :src="msg.thumb || msg.url + '?thumbnail=true'"
+                        />
+                    </div>
+                    <div v-if="msg.type === 'audio'" @click="startplayAudio(msg, index)">音频</div>
+                    <div id="wrapper" v-if="msg.type === 'video'">
+                        <video-wrapper :video-url="msg.url" :el-id="`_${msg.id}`" />
+                    </div>
+                    <div v-if="msg.type === 'file'">
+                        <p @click="downLoadFile(msg)">下载文件</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -26,12 +28,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick, watch, toRaw } from 'vue'
 import { EasemobChat } from '@/EaseIM'
 import { useRoute } from 'vue-router'
+import { useMessagesScroll } from '@/hooks'
 import { useMessagesStore, useLoginStore } from '@/stores'
 import { useFetchHistoryMessages } from '@/EaseIM/hooks/useFetchHistoryMessages'
 import { EMMsgType } from '@/EaseIM/types/messages'
+/* vant */
+import { useWindowSize } from '@vant/use'
+import { showToast } from 'vant'
+/* lodash */
+import _ from 'lodash'
 /* 音频播放使用 */
 import BenzAMRRecorder from 'benz-amr-recorder'
 /* 视频播放组件 */
@@ -47,7 +55,7 @@ const nowChatUser = computed(() => {
     return result
 })
 
-/* 消息处理相关 */
+/*历史消息处理 */
 const { historyMsgLoading, historyCursor, fetchHistoryMsg } = useFetchHistoryMessages()
 //拉取历史消息
 const getHistoryMesssage = (cursor: string | undefined) => {
@@ -67,7 +75,51 @@ const messagesList = computed(() => {
 const onRefresh = () => {
     getHistoryMesssage(historyCursor.value)
 }
+const msgContainer = ref<HTMLElement>()
 
+/* 消息滚动逻辑 */
+//控制消息滚动
+const scrollMessageList = (direction: 'up' | 'bottom') => {
+    useMessagesScroll({ className: 'messages_box_items', direction })
+}
+//监听可视区高度改变调整消息列表高度并进行滚动【
+//原有是是主动改变高度，现有发现软键盘抬起其实会自动调整高度】
+// const msgHeight = ref('')
+const { height } = useWindowSize()
+onMounted(() => {
+    watch(height, (newVal) => {
+        nextTick(() => {
+            console.log('>>>>>改变了高度', newVal)
+            // msgHeight.value = newVal - 90 + 'px'
+            // showToast(`${msgHeight.value}`)
+            //监听视图窗口变化，主动将消息滚动置底。
+            scrollMessageList('bottom')
+        })
+    })
+})
+//进入页面滚动置底
+onMounted(() => {
+    scrollMessageList('bottom')
+})
+//监听数组的前后变化，需要深拷贝一份才可以监听到新旧值。
+watch(
+    () => _.cloneDeep(messagesList.value),
+    (newVal, oldVal) => {
+        if (!oldVal || !newVal) return
+        console.log('新消息最后一条id', newVal[newVal.length - 1].id, '老消息最后一条id', oldVal[oldVal.length - 1].id)
+        if (newVal[newVal.length - 1].id === oldVal[oldVal.length - 1].id) {
+            scrollMessageList('up')
+        } else {
+            scrollMessageList('bottom')
+        }
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+)
+
+/* 消息list基础处理 */
 //判断消息来源是否为自己
 const loginStore = useLoginStore()
 const isMyself = computed(() => {
