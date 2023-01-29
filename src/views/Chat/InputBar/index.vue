@@ -20,7 +20,7 @@
                     </transition>
 
                     <transition name="van-slide-right">
-                        <van-button v-show="inputTextVal" type="success">发送</van-button>
+                        <van-button class="send_btn" icon="guide-o" v-show="inputTextVal" type="success" />
                     </transition>
                 </div>
             </div>
@@ -100,7 +100,7 @@ const changeEmojiInput = () => {
     left: 0;
     bottom: 0;
     width: 100%;
-    background: #f3f3f3;
+    background-color: #f8f8f8;
 
     .input_bar_container_base {
         width: 100%;
@@ -113,7 +113,6 @@ const changeEmojiInput = () => {
         .input_bar_container_left {
             width: 15%;
             height: 100%;
-            background: red;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -122,14 +121,22 @@ const changeEmojiInput = () => {
             width: 70%;
             height: 100px;
             max-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .input_bar_container_right {
             min-width: 20%;
+            max-width: 20%;
             height: 100%;
-            background: cadetblue;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            .send_btn {
+                width: 90px;
+                height: 50px;
+                font-size: 11px;
+            }
         }
     }
 }

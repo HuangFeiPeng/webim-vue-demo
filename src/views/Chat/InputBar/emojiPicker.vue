@@ -2,9 +2,10 @@
     <div class="container">
         <ul class="emojis_container">
             <li v-show="nearestEmojis.length" class="nearest_emojis">
-                <p>最近使用</p>
+                <p class="title">最近使用</p>
                 <div class="nearest_emojis_box">
                     <div
+                        class="van-haptics-feedback"
                         v-for="(emoji, index) in nearestEmojis"
                         :key="emoji + index"
                         @click.prevent="pickedTheEmoji(emoji)"
@@ -14,17 +15,20 @@
                 </div>
             </li>
             <li class="all_emojis">
-                <p>所有表情</p>
+                <p class="title">所有表情</p>
                 <div class="all_emojis_box">
-                    <div v-for="(emoji, index) in emojis" :key="emoji + index" @click="pickedTheEmoji(emoji)">
+                    <div
+                        class="van-haptics-feedback"
+                        v-for="(emoji, index) in emojis"
+                        :key="emoji + index"
+                        @click="pickedTheEmoji(emoji)"
+                    >
                         {{ emoji }}
                     </div>
                 </div>
             </li>
         </ul>
-        <div class="handnle_btn">
-            <van-button @click="deleTheEmoji">删除</van-button>
-        </div>
+        <div class="handnle_btn"><van-button class="btn" icon="close" @click="deleTheEmoji" type="success" /></div>
     </div>
 </template>
 
@@ -68,22 +72,31 @@ const deleTheEmoji = () => {
     position: relative;
     width: 100%;
     min-height: 300px;
-    background: #fff;
+    background: #ededed;
 }
 .emojis_container {
     width: 100%;
-    max-height: 300px;
+    max-height: 400px;
+    padding: 25px 10px 50px 10px;
     overflow-y: scroll;
 }
 .handnle_btn {
     position: fixed;
-    bottom: 0;
-    right: 0;
+    bottom: 50px;
+    right: 10px;
     z-index: 99;
+    .btn {
+        width: 80px;
+        height: 50px;
+    }
 }
 .nearest_emojis,
 .all_emojis {
     width: 100%;
+    .title {
+        font-size: 17px;
+        font-weight: bold;
+    }
 }
 .nearest_emojis_box,
 .all_emojis_box {
@@ -91,5 +104,8 @@ const deleTheEmoji = () => {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
+    div {
+        padding: 5px;
+    }
 }
 </style>

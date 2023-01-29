@@ -37,7 +37,13 @@ const value = computed<string>({
 </script>
 
 <style lang="scss" scoped>
+.container {
+    width: 100%;
+    width: 100%;
+    height: 80px;
+}
 :deep(.van-cell) {
-    height: 100px;
+    border-radius: 20px;
+    height: 80px;
 }
 </style>

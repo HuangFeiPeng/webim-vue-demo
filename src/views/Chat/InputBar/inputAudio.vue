@@ -145,17 +145,17 @@ const recordOver = () => {
 <style lang="scss" scoped>
 .container {
     width: 100%;
-    height: 100%;
+    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #000;
+    background: #fff;
+    border-radius: 50px;
+    font-size: 17px;
 }
 .collect_box {
     width: 100%;
-    // height: 80px;
     text-align: center;
-    background: pink;
     user-select: none;
 }
 :deep(.popup_style) {
