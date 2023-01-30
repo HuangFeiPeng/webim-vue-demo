@@ -2,8 +2,8 @@
     <div class="container">
         <!-- 基础音频采集 -->
         <div class="collect_box" @touchstart.prevent="startRecord" @touchmove="recording" @touchend="recordOver">
-            <p v-show="!collectAudioState.voice.type">按住 说话</p>
-            <p v-show="collectAudioState.voice.type">松开 发送</p>
+            <p v-show="!collectAudioState.voice.type">{{ $t('chat.inputBar.inputAudio.holdTalk') }}</p>
+            <p v-show="collectAudioState.voice.type">{{ $t('chat.inputBar.inputAudio.releaseSend') }}</p>
         </div>
         <van-popup
             :class="[isCannleRecord ? 'cannel_popup_style' : 'popup_style']"
@@ -15,8 +15,8 @@
         >
             <div class="collect_detail">
                 <!-- <p class="time">00:30</p> -->
-                <p class="text" v-show="isCannleRecord">松开手指，取消发送</p>
-                <p class="text" v-show="!isCannleRecord">手指上滑，取消发送</p>
+                <p class="text" v-show="isCannleRecord">{{ $t('chat.inputBar.inputAudio.unFingerCannelSend') }}</p>
+                <p class="text" v-show="!isCannleRecord">{{ $t('chat.inputBar.inputAudio.upsideCannelSend') }}</p>
             </div>
         </van-popup>
     </div>
@@ -24,6 +24,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, inject } from 'vue'
+/* i18n */
+import { useI18n } from 'vue-i18n'
 /* EaseIM */
 import { EChatSDK, EasemobChat } from '@/EaseIM'
 import { useSendDisplayMsg } from '@/EaseIM/hooks'
@@ -56,6 +58,8 @@ const collectAudioState = reactive<CollectAudioState>({
 })
 
 /* 整体音频采集发送逻辑 */
+/* i18n */
+const { t } = useI18n()
 //Popup
 const isShowPopup = ref(false)
 //Popup 内容
@@ -148,7 +152,7 @@ const recordOver = () => {
                 initVocie()
                 // 放弃录音
                 collectAudioState.amrRec.cancelRecord()
-                showToast('录音时间较短')
+                showToast(`${t('chat.inputBar.inputAudio.toastTimeshort')}`)
                 isShowPopup.value = false
             } else if (collectAudioState.amrRec && !isCannleRecord.value) {
                 console.log('录音发送')
@@ -163,7 +167,6 @@ const recordOver = () => {
                 console.log('上滑执行取消录音')
                 collectAudioState.amrRec.cancelRecord()
                 initVocie()
-                showToast('已取消')
             }
         })
         .catch((e) => {

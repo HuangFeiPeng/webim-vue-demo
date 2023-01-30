@@ -2,7 +2,7 @@
     <div class="container">
         <ul class="emojis_container">
             <li v-show="nearestEmojis.length" class="nearest_emojis">
-                <p class="title">最近使用</p>
+                <p class="title">{{ $t('chat.inputBar.emojiPicker.nearest') }}</p>
                 <div class="nearest_emojis_box">
                     <div
                         class="van-haptics-feedback"
@@ -15,7 +15,7 @@
                 </div>
             </li>
             <li class="all_emojis">
-                <p class="title">所有表情</p>
+                <p class="title">{{ $t('chat.inputBar.emojiPicker.allEmoji') }}</p>
                 <div class="all_emojis_box">
                     <div
                         class="van-haptics-feedback"

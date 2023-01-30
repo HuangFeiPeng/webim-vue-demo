@@ -45,6 +45,7 @@ import { useClickAway } from '@vant/use'
 import { EasemobChat } from '@/EaseIM'
 import { useSendDisplayMsg } from '@/EaseIM/hooks'
 import { EMCreateMsgBodyType } from '@/EaseIM/types/messages'
+
 /* 组件 */
 //文本输入
 import InputText from './inputText.vue'
@@ -52,6 +53,7 @@ import InputText from './inputText.vue'
 import InputAudio from './inputAudio.vue'
 // emoji组件
 import EmojiPicker from './emojiPicker.vue'
+
 /*
  * 在JavaScript中，字符串字符与单独的Emoji表情之间并不总是存在一对一的关系。
  * 某些Emoji表情由多个字符表示。这可能会导致分割字符串时出现问题，
@@ -68,6 +70,7 @@ const props = defineProps<Props>()
 /* provide */
 provide('chatType', props.chatType)
 provide('targetId', props.targetId)
+
 /* 输入框逻辑 */
 const isShowEmojiPicker = ref(false) //是否展示表情框
 const inputContainer = ref<HTMLElement>() //处理点击外部重置部分输入框功能状态

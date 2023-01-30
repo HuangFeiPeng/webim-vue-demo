@@ -5,7 +5,6 @@
             rows="5"
             autosize
             type="textarea"
-            placeholder="请输入留言"
             enterkeyhint="send"
             @focus="$emit('hideEmojiPicker')"
         />
