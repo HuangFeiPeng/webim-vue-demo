@@ -1,7 +1,6 @@
 .messages_container {
     width: 100%;
     height: calc(100% - 190px);
-    background: blue;
     overflow-y: scroll;
 }
 .myMsgbox{
@@ -17,6 +16,7 @@
 .messages_box{
     width: 100%;
     min-height: 100px;
+    font-size: 18px;
     
 }
 

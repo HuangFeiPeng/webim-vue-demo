@@ -14,7 +14,7 @@
             :style="{ padding: '15px' }"
         >
             <div class="collect_detail">
-                <p class="time">00:30</p>
+                <!-- <p class="time">00:30</p> -->
                 <p class="text" v-show="isCannleRecord">松开手指，取消发送</p>
                 <p class="text" v-show="!isCannleRecord">手指上滑，取消发送</p>
             </div>
@@ -23,10 +23,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, inject } from 'vue'
+/* EaseIM */
+import { EChatSDK, EasemobChat } from '@/EaseIM'
+import { useSendDisplayMsg } from '@/EaseIM/hooks'
+import { EMCreateMsgBodyType } from '@/EaseIM/types/messages'
 import { showToast } from 'vant'
 //音频采集插件
 import BenzAMRRecorder from 'benz-amr-recorder'
+/* inject */
+const chatType = inject('chatType') as EasemobChat.ChatType
+const targetId = inject('targetId') as string
 interface CollectAudioState {
     voice: {
         interval: number | undefined
@@ -54,11 +61,34 @@ const isShowPopup = ref(false)
 //Popup 内容
 //是否为取消发送样式
 const isCannleRecord = ref(false)
+//发送语音消息
+const { actionSendMessages } = useSendDisplayMsg()
+const sendAudioMessage = async () => {
+    const file: EasemobChat.FileObj = {
+        url: EChatSDK.utils.parseDownloadResponse(collectAudioState.voice.src),
+        filename: '录音',
+        filetype: '.amr',
+        data: collectAudioState.voice.src as File,
+    }
+    const messages: EMCreateMsgBodyType = {
+        type: 'audio',
+        time: Date.now(),
+        chatType: chatType,
+        to: targetId,
+        file: file,
+        filename: file.filename,
+        length: collectAudioState.voice.length,
+    }
+    actionSendMessages(messages)
+    initVocie()
+    console.log('>>>>>')
+}
 //初始化录音状态
 const initVocie = () => {
     collectAudioState.voice.interval = undefined
     collectAudioState.voice.length = 0
     collectAudioState.voice.type = false
+    collectAudioState.voice.src = null
     isShowPopup.value = false
     isCannleRecord.value = false
 }
@@ -91,7 +121,6 @@ const startRecord = (e: TouchEvent) => {
 }
 
 //移动的时候提示上滑滑出按钮取消录音，滑动回来录音正常
-
 const recording = (e: TouchEvent) => {
     if (!collectAudioState.changedTouches || !collectAudioState.amrRec) return
     // console.log('e.touches[0].pageY', e.touches[0].pageY)
@@ -128,7 +157,8 @@ const recordOver = () => {
                 // 获取音频文件
                 collectAudioState.voice.src = collectAudioState.amrRec.getBlob()
                 clearInterval(collectAudioState.voice.interval)
-                initVocie()
+                sendAudioMessage()
+                // initVocie()
             } else if (collectAudioState.amrRec && isCannleRecord.value) {
                 console.log('上滑执行取消录音')
                 collectAudioState.amrRec.cancelRecord()

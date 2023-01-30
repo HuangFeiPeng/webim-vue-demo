@@ -18,9 +18,15 @@
                     <transition name="van-slide-left">
                         <div class="van-haptics-feedback" v-show="!inputTextVal"><van-icon name="add-o" /></div>
                     </transition>
-
+                    <!-- 发送按钮 -->
                     <transition name="van-slide-right">
-                        <van-button class="send_btn" icon="guide-o" v-show="inputTextVal" type="success" />
+                        <van-button
+                            class="send_btn"
+                            icon="guide-o"
+                            v-show="inputTextVal"
+                            type="success"
+                            @click="sendTextMessage"
+                        />
                     </transition>
                 </div>
             </div>
@@ -32,9 +38,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 /* vant use */
 import { useClickAway } from '@vant/use'
+/* EaseIM*/
+import { EasemobChat } from '@/EaseIM'
+import { useSendDisplayMsg } from '@/EaseIM/hooks'
+import { EMCreateMsgBodyType } from '@/EaseIM/types/messages'
 /* 组件 */
 //文本输入
 import InputText from './inputText.vue'
@@ -49,7 +59,15 @@ import EmojiPicker from './emojiPicker.vue'
  * 因此引入【GraphemeSplitter】库用来正确计算并且统计实际输入框内容长度。
  **/
 import GraphemeSplitter from 'grapheme-splitter'
-
+/* Props */
+interface Props {
+    chatType: EasemobChat.ChatType
+    targetId: string
+}
+const props = defineProps<Props>()
+/* provide */
+provide('chatType', props.chatType)
+provide('targetId', props.targetId)
 /* 输入框逻辑 */
 const isShowEmojiPicker = ref(false) //是否展示表情框
 const inputContainer = ref<HTMLElement>() //处理点击外部重置部分输入框功能状态
@@ -91,6 +109,21 @@ const changeEmojiInput = () => {
     isShowEmojiPicker.value = !isShowEmojiPicker.value
     //如果切换时为音频输入状态，则修改为文本状态。
     if (!isInputText.value) return (isInputText.value = true)
+}
+
+/* 文本消息发送 */
+const { actionSendMessages } = useSendDisplayMsg()
+const sendTextMessage = async () => {
+    if (inputTextVal.value.match(/^\s*$/)) return
+    const messages: EMCreateMsgBodyType = {
+        time: Date.now(),
+        type: 'txt',
+        msg: inputTextVal.value,
+        chatType: props.chatType,
+        to: props.targetId,
+    }
+    await actionSendMessages(messages)
+    inputTextVal.value = ''
 }
 </script>
 

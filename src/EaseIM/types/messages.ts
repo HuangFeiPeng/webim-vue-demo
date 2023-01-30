@@ -20,4 +20,4 @@ export type EMCreateMsg =
     | EasemobChat.CreateLocationMsgParameters
     | EasemobChat.CreateAudioMsgParameters
 type AllowedMsgType = 'txt' | 'img' | 'file' | 'custom' | 'video' | 'audio'
-export type EMCreateMsgBodyType = EMCreateMsg & { time: number | string; type: AllowedMsgType; thumb: string }
+export type EMCreateMsgBodyType = EMCreateMsg & { time: number | string; type: AllowedMsgType; thumb?: string }

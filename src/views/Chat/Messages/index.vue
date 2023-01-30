@@ -124,7 +124,11 @@ watch(
 const loginStore = useLoginStore()
 const isMyself = computed(() => {
     return (msg: EMMsgType) => {
-        return msg.from === loginStore.loginHxId
+        if (msg.from) {
+            return msg.from === loginStore.loginHxId
+        } else {
+            return true
+        }
     }
 })
 

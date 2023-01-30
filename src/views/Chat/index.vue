@@ -2,7 +2,7 @@
     <div class="chat_container">
         <nav-bar :is-back="true" is-more :title="navTitle" @onMore="onMore" />
         <Messages />
-        <InputBar />
+        <InputBar :chat-type="chatType" :target-id="targetId" />
     </div>
 </template>
 
@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router'
 /* pinia */
 import { useContactsStore, useGroupsStore } from '@/stores'
 /* IM */
+import { EasemobChat } from '@/EaseIM'
 /* 组件 */
 import NavBar from '@/layout/NavBar/index.vue'
 import Messages from './Messages/index.vue'
@@ -44,7 +45,10 @@ const targetUserInfos = computed(() => {
     }
     return resultInfos
 })
+const targetId = computed(() => route.query.id as string)
+const chatType = computed(() => route.query.chatType as EasemobChat.ChatType)
 /* NarBar */
+
 const navTitle = computed(() => {
     const { chatType } = route.query
     let title
