@@ -7,7 +7,7 @@
                     <van-icon v-show="!isInputText" name="chat-o" />
                 </div>
                 <div class="input_bar_container_main">
-                    <input-text v-show="isInputText" v-model="inputTextVal" @hideEmojiPicker="hideEmojiPicker" />
+                    <input-text v-show="isInputText" v-model="inputTextVal" @hideAllShowBox="hideAllShowBox" />
                     <input-audio v-show="!isInputText" />
                 </div>
                 <div class="input_bar_container_right">
@@ -16,7 +16,9 @@
                         <p v-show="!isShowEmojiPicker">😁</p>
                     </div>
                     <transition name="van-slide-left">
-                        <div class="van-haptics-feedback" v-show="!inputTextVal"><van-icon name="add-o" /></div>
+                        <div class="van-haptics-feedback" v-show="!inputTextVal" @click="changeMoreMsgFunc">
+                            <van-icon name="add-o" />
+                        </div>
                     </transition>
                     <!-- 发送按钮 -->
                     <transition name="van-slide-right">
@@ -32,6 +34,9 @@
             </div>
             <transition name="van-slide-up">
                 <emoji-picker v-show="isShowEmojiPicker" @handleInputValContent="handleInputValContent" />
+            </transition>
+            <transition name="van-slide-up">
+                <more-msg-func v-show="isShowMoreMsgFunc" />
             </transition>
         </div>
     </transition>
@@ -53,6 +58,8 @@ import InputText from './inputText.vue'
 import InputAudio from './inputAudio.vue'
 // emoji组件
 import EmojiPicker from './emojiPicker.vue'
+// 更多消息功能
+import MoreMsgFunc from './moreMsgFunc.vue'
 
 /*
  * 在JavaScript中，字符串字符与单独的Emoji表情之间并不总是存在一对一的关系。
@@ -73,12 +80,15 @@ provide('targetId', props.targetId)
 
 /* 输入框逻辑 */
 const isShowEmojiPicker = ref(false) //是否展示表情框
+const isShowMoreMsgFunc = ref(false) //是否展示更多消息功能框
 const inputContainer = ref<HTMLElement>() //处理点击外部重置部分输入框功能状态
-const hideEmojiPicker = () => {
-    return (isShowEmojiPicker.value = false)
+const hideAllShowBox = () => {
+    isShowEmojiPicker.value = false
+    isShowMoreMsgFunc.value = false
 }
+//点击外部隐藏在展示的功能框
 useClickAway(inputContainer, () => {
-    hideEmojiPicker()
+    hideAllShowBox()
 })
 
 /* 文本输入框 */
@@ -86,7 +96,7 @@ const inputTextVal = ref('') //文本输入框内容，且以组件双向绑定�
 const isInputText = ref(true) //是否展示文本输入框
 //切换输入框输入类型[audio->text,text-audio]
 const changeInputType = () => {
-    hideEmojiPicker()
+    hideAllShowBox()
     isInputText.value = !isInputText.value
 }
 //输入框内容处理（emoji添加或者删除）
@@ -111,9 +121,24 @@ const handleInputValContent = (params: HandleInputValContent) => {
 const changeEmojiInput = () => {
     isShowEmojiPicker.value = !isShowEmojiPicker.value
     //如果切换时为音频输入状态，则修改为文本状态。
-    if (!isInputText.value) return (isInputText.value = true)
+    if (!isInputText.value) {
+        isInputText.value = true
+    }
+    if (isShowMoreMsgFunc.value) {
+        isShowMoreMsgFunc.value = false
+    }
 }
-
+//切换更多功能与文本输入状态
+const changeMoreMsgFunc = () => {
+    isShowMoreMsgFunc.value = !isShowMoreMsgFunc.value
+    //如果切换时为音频输入状态，则修改为文本状态。
+    if (!isInputText.value) {
+        isInputText.value = true
+    }
+    if (isShowEmojiPicker.value) {
+        isShowEmojiPicker.value = false
+    }
+}
 /* 文本消息发送 */
 const { actionSendMessages } = useSendDisplayMsg()
 const sendTextMessage = async () => {

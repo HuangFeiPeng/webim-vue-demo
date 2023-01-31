@@ -28,7 +28,7 @@ import './index.scss'
 const loginParams = reactive({
     phoneNumber: '',
     username: 'hfp',
-    password: '1',
+    password: '2',
     smsCode: '',
 })
 const { EMlogin } = useEMLogin()

@@ -6,7 +6,7 @@
             autosize
             type="textarea"
             enterkeyhint="send"
-            @focus="$emit('hideEmojiPicker')"
+            @focus="$emit('hideAllShowBox')"
         />
     </div>
 </template>
@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits<{
     (e: 'update:modelValue', params: string): void
-    (e: 'hideEmojiPicker'): void
+    (e: 'hideAllShowBox'): void
 }>()
 // const emit = defineEmits(['update:modelValue'])
 
