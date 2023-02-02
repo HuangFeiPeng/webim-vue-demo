@@ -9,4 +9,10 @@ useLocale()
 </script>
 <style lang="scss">
 @import '@/assets/reset.css';
+html,
+body,
+#app {
+    height: 100%;
+    overflow: hidden;
+}
 </style>

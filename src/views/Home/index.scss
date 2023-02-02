@@ -1,6 +1,7 @@
 .app_container{
     // height: 100vh;
-    overflow: hidden;
+    height: 100%;
+    overflow-y: scroll;
 }
 .conversation_item_box{
     height: 150px;
