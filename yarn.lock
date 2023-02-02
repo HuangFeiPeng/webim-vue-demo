@@ -3202,6 +3202,11 @@ error-stack-parser@^2.0.6:
   dependencies:
     stackframe "^1.3.4"
 
+eruda@^2.11.2:
+  version "2.11.2"
+  resolved "https://registry.npmmirror.com/eruda/-/eruda-2.11.2.tgz#0109fea9a86a809afd8f71626ff60f6c16f36991"
+  integrity sha512-WN/o7sKlkOwGUDju0hCwfqvCmGiZFzWAbxT0LF+TA/kuJmcBPoNr0OMrnoEoKJWQqrVzVlZpLON4vegpsoSaPQ==
+
 es-fullscreen@^0.3.0:
   version "0.3.0"
   resolved "https://registry.npmmirror.com/es-fullscreen/-/es-fullscreen-0.3.0.tgz#acdeb5b99d888703bb848d7faa7b60e6ff3def0d"
