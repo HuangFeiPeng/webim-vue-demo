@@ -26,6 +26,9 @@
 import { ref, reactive, inject } from 'vue'
 /* i18n */
 import { useI18n } from 'vue-i18n'
+/* vueuse */
+import { usePermission } from '@vueuse/core'
+
 /* EaseIM */
 import { EChatSDK, EasemobChat } from '@/EaseIM'
 import { useSendDisplayMsg } from '@/EaseIM/hooks'
@@ -56,7 +59,8 @@ const collectAudioState = reactive<CollectAudioState>({
     amrRec: null, //录音对象
     changedTouches: null,
 })
-
+/* 获取权限*/
+usePermission('microphone')
 /* 整体音频采集发送逻辑 */
 /* i18n */
 const { t } = useI18n()
@@ -204,6 +208,7 @@ const recordOver = () => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    user-select: none;
     color: #fff;
     .time {
         font-size: 12px;

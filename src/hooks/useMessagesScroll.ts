@@ -1,4 +1,4 @@
-import { ref, nextTick } from 'vue'
+import { nextTick } from 'vue'
 interface Params {
     className: string
     direction: 'up' | 'bottom'

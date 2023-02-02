@@ -36,7 +36,7 @@
                 <emoji-picker v-show="isShowEmojiPicker" @handleInputValContent="handleInputValContent" />
             </transition>
             <transition name="van-slide-up">
-                <more-msg-func v-show="isShowMoreMsgFunc" />
+                <more-msg-func v-show="isShowMoreMsgFunc" @hideAllShowBox="hideAllShowBox" />
             </transition>
         </div>
     </transition>

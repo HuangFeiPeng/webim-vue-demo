@@ -1,2 +1,3 @@
 import { getEMKey } from './getEMKey'
-export { getEMKey }
+import { getImageSize } from './getImageSize'
+export { getEMKey, getImageSize }

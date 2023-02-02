@@ -1,2 +1,3 @@
 import { useMessagesScroll } from './useMessagesScroll'
-export { useMessagesScroll }
+import { useGetMsgFileData } from './useGetMsgFileData'
+export { useMessagesScroll, useGetMsgFileData }
