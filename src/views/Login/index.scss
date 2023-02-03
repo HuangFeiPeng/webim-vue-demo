@@ -7,17 +7,76 @@
     width: 100%;
     max-height: 100vh;
     overflow: hidden;
-    background-color: #f7f8fa;
+    background: url('@/assets/images/login/loginBg.png') no-repeat;
+    background-size: contain;
 }
-.login_title{
-    width: 100%;
-    text-align: center
-}
-.login_button_box {
+.login_title {
     width: 100%;
     text-align: center;
-    .login_btn{
-        width: 85%;
+    color: #fff;
+}
+.login_logo_box {
+    margin-top: 188px;
+    width: 100%;
+    .login_logo {
+        position: relative;
+        width: 164px;
+        height: 164px;
+        margin: 0 auto;
+        img {
+            width: 164px;
+            height: 164px;
+        }
+        .sdk_version {
+            position: absolute;
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            right: -70px;
+            top: 10px;
+            font-size: 17px;
+            font-weight: 200;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0 20px 20px 10px;
+        }
     }
-   
+}
+
+.login_input_box {
+    width: 618px;
+    height: 452px;
+    margin: 76px auto;
+    :deep(.van-cell) {
+        width: 618px;
+        height: 104px;
+        background: #f2f2f2;
+        border-radius: 114px;
+    }
+    .login_input_sms {
+        margin-top: 40px;
+    }
+}
+.clause_text_box {
+    width: 100%;
+    height: 34px;
+    font-size: 24px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #ffffff;
+    line-height: 34px;
+    margin-top: 18px;
+    padding: 0 30px;
+}
+.login_action_btn {
+    width: 100%;
+    margin-top: 48px;
+    text-align: center;
+    .login_btn {
+        width: 618px;
+        height: 104px;
+        border-radius: 114px;
+    }
 }
