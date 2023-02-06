@@ -19,7 +19,7 @@
                 </van-field>
             </div>
             <div class="clause_text_box">
-                <van-checkbox v-model="isAgree" checked-color="#7DED6A"
+                <van-checkbox v-model="isAgree" checked-color="#7DED6A" icon-size="12px"
                     ><span class="clause_text">
                         同意<a href="http://" target="_blank" rel="noopener noreferrer">《环信服务条款》</a> 与<a
                             href="https://www.easemob.com/protocol"
