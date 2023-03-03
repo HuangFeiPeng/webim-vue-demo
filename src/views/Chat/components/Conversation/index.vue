@@ -26,46 +26,64 @@ const toInformDetails = () => {
 const toChatMessage = (id, chatType) => {
     console.log('>>>>>>>id', id)
     router.push({
-        path: '/chat/conversation/message', query: {
+        path: '/chat/conversation/message',
+        query: {
             id,
             chatType
         }
     })
 }
-
+//路由跳转-机器人
+const toChatbot = (id, chatType) => {
+    router.push({
+        path: '/chat/conversation/chatbot',
+        query: {
+            id: 'hfp',
+            chatType: 'singleChat'
+        }
+    })
+}
 </script>
 <template>
-  <el-container style="height: 100% ">
-    <el-aside class="chat_converation_box">
-      <!-- 搜索组件 -->
-      <SearchInput :searchType="'conversation'" :searchData="conversationList" @toChatMessage="toChatMessage" />
-      <div class="chat_conversation_list">
-        <ConversationList @toInformDetails="toInformDetails" @toChatMessage="toChatMessage" />
-      </div>
-    </el-aside>
-    <el-main class="chat_converation_main_box">
-      <router-view></router-view>
-      <Welcome />
-    </el-main>
-  </el-container>
+    <el-container style="height: 100%">
+        <el-aside class="chat_converation_box">
+            <!-- 搜索组件 -->
+            <SearchInput
+                :searchType="'conversation'"
+                :searchData="conversationList"
+                @toChatMessage="toChatMessage"
+            />
+            <div class="chat_conversation_list">
+                <el-button @click="toChatbot">跳转至机器人页面</el-button>
+                <ConversationList
+                    @toInformDetails="toInformDetails"
+                    @toChatMessage="toChatMessage"
+                />
+            </div>
+        </el-aside>
+        <el-main class="chat_converation_main_box">
+            <router-view></router-view>
+            <Welcome />
+        </el-main>
+    </el-container>
 </template>
 
 <style lang="scss" scoped>
 .chat_converation_box {
-  position: relative;
-  background: #cfdbf171;
-  overflow: hidden;
-  min-width: 324px;
+    position: relative;
+    background: #cfdbf171;
+    overflow: hidden;
+    min-width: 324px;
 
-  .chat_conversation_list {
-    height: calc(100% - 60px);
-  }
+    .chat_conversation_list {
+        height: calc(100% - 60px);
+    }
 }
 
 .chat_converation_main_box {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
 }
 </style>
