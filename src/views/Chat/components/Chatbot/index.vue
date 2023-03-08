@@ -156,10 +156,20 @@ const scrollMessageList = (direction) => {
         }
     })
 }
+//等待机器人回复
+const waitRobotReplyState = ref(false)
+const changeRobotReplayState = (state) => {
+    waitRobotReplyState.value = state
+}
 watch(
-    () => messageData,
+    () => _.cloneDeep(messageData.value),
     (newMsg, oldMsg) => {
         nextTick(() => {
+            //获取最后一条消息，如果不为当前登录ID则清除等待问答状态。
+            const lastMsg = newMsg[newMsg.length - 1]
+            if (lastMsg && lastMsg.from !== EaseChatClient.user) {
+                waitRobotReplyState.value = false
+            }
             console.log('>>>>>监听到消息变化', notScrollBottom.value)
             //判断拉取漫游导致的消息变化不需要执行滚动置底
             if (notScrollBottom.value) {
@@ -187,12 +197,6 @@ watch(
         }
     }
 )
-
-//等待机器人回复
-const waitRobotReplyState = ref(false)
-const changeRobotReplayState = (state) => {
-    waitRobotReplyState.value = state
-}
 </script>
 <template>
     <el-container class="app_container">

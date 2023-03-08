@@ -91,6 +91,7 @@ const sendTextMessage = _.debounce(async () => {
     resize: none;
     padding: 10px 20px;
     font-size: 14px;
+    border-top: 1px solid #f3f3f3;
 }
 
 .no_content_send_btn {

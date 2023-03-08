@@ -131,12 +131,15 @@ const openStatement = () =>
                     placement="bottom-end"
                 >
                     <!-- 文本类型消息 -->
-                    <p
-                        style="padding: 10px"
-                        v-if="msgBody.type === ALL_MESSAGE_TYPE.TEXT"
-                    >
-                        {{ msgBody.msg }}
-                    </p>
+                    <span>
+                        <p
+                            style="padding: 10px"
+                            v-if="msgBody.type === ALL_MESSAGE_TYPE.TEXT"
+                        >
+                            {{ msgBody.msg }}
+                        </p>
+                    </span>
+
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item
@@ -181,10 +184,12 @@ const openStatement = () =>
                     trigger="contextmenu"
                     placement="bottom-end"
                 >
-                    <!-- 文本类型消息 -->
-                    <p style="padding: 10px">
-                        chatbot正在思考<span class="dot"> ...</span>
-                    </p>
+                    <span>
+                        <!-- 文本类型消息 -->
+                        <p style="padding: 10px">
+                            对方正在输入<span class="dot-ani"></span>
+                        </p>
+                    </span>
                 </div>
             </div>
         </div>
@@ -308,33 +313,22 @@ const openStatement = () =>
         cursor: pointer;
     }
 }
-@keyframes dot {
-    0% {
-        width: 0;
-        margin-right: 1.5em;
-    }
-
-    33% {
-        width: 0.5em;
-        margin-right: 1em;
-    }
-
-    66% {
-        width: 1em;
-        margin-right: 0.5em;
-    }
-
-    100% {
-        width: 1.5em;
-        margin-right: 0;
-    }
-}
-.dot {
-    font-family: simsun;
-    animation: dot 1s infinite step-start;
+.dot-ani {
     display: inline-block;
-    width: 1.5em;
-    vertical-align: bottom;
+    height: 12px;
+    line-height: 12px;
     overflow: hidden;
+}
+.dot-ani::after {
+    display: inline-table;
+    white-space: pre;
+    content: '\A.\A..\A...';
+    animation: spin 2s steps(4) infinite;
+}
+@keyframes spin {
+    to {
+        -webkit-transform: translateY(-48px);
+        transform: translateY(-48px);
+    }
 }
 </style>
