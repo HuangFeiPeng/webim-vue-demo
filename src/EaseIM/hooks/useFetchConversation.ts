@@ -14,11 +14,12 @@ export const useFetchConversation = () => {
     const fetchConversionList = async (params: FetchConversationsParams) => {
         return new Promise<any[]>(async (resolve, reject) => {
             //TODO 目前getConversationlist 返回类型有问题待后续SDK优化，短期用any解决。
-            EChatClient.getConversationlist()
+            console.log('params', params)
+            EChatClient.getConversationlist(params)
                 .then((res: any) => {
                     const resultList = res?.data?.channel_infos
                     const groupSessionList: string[] = []
-                    resultList.length &&
+                    resultList?.length &&
                         resultList.forEach((channel: any) => {
                             /**
                              * 如果会话类型为群组则单独获取群组的详情，

@@ -1,13 +1,13 @@
-.contacts_container{
+.contacts_container {
     width: 100%;
     height: 100vh;
-    background-color: #F7F6F9;
+    background-color: #f7f6f9;
 }
-.contacts_header_box{
+.contacts_header_box {
     width: 100%;
 }
 :deep(.van-cell) {
-    display:flex;
+    display: flex;
     flex-direction: row;
     align-items: center;
 }
@@ -16,13 +16,12 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    height: 80px;   
-    .contacts_avatar{
+    height: 80px;
+    .contacts_avatar {
         width: 68px;
         height: 68px;
-        img{
-            border-radius:5px;
+        img {
+            border-radius: 5px;
         }
     }
 }
-

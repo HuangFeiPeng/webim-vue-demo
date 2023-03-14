@@ -50,7 +50,6 @@ const fullUnReadNum = computed(() => {
 })
 //TabBar的显隐
 const isShowTabBar = computed(() => {
-    console.log('route.meta.needTabBar', route.meta.needTabBar)
     const needTabBar = route.meta.needTabBar
     return needTabBar
 })

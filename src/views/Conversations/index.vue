@@ -3,7 +3,6 @@
         <!-- 搜索组件 -->
         <SearchInput />
         <van-list
-            v-show="conversationList.length"
             v-model:loading="loading"
             :finished="finished"
             :finished-text="$t('conversations.nomore')"
@@ -49,12 +48,6 @@
                 </template>
             </van-swipe-cell>
         </van-list>
-        <van-empty
-            v-show="!conversationList.length"
-            :image="emptyIcon"
-            image-size="80"
-            description="寻找自我，保持本色"
-        />
     </div>
 </template>
 
@@ -93,22 +86,19 @@ const conversationList = computed(() => {
 //下拉加载更多数据
 const loading = ref(false)
 const finished = ref(false)
-const pageNum = ref(0)
+const pageNum = ref(1)
 const pageSize = ref(20)
 const { fetchConversionList } = useFetchConversation()
 const onLoadConversations = async () => {
-    try {
-        if (conversationList.value.length) {
-            return (finished.value = false)
-        } else {
-            let res = await fetchConversionList({ pageNum: pageNum.value, pageSize: pageSize.value })
-            if (!res.length) return (finished.value = true)
-        }
-    } catch (error) {
-        console.log('>>>>>>> Error')
-    } finally {
-        loading.value = false
+    console.log('onLoadConversations')
+    let res = await fetchConversionList({ pageNum: pageNum.value, pageSize: pageSize.value })
+    loading.value = false
+    pageNum.value = pageNum.value + 1
+    if (!res.length) {
+        finished.value = true
+        return
     }
+    console.log(res, pageNum.value)
 }
 
 //处理置顶会话
@@ -143,7 +133,7 @@ const mapConversationsInfo = computed(() => {
                 name:
                     groups[item.id]?.groupInfo?.name ||
                     groups[item.id]?.groupInfo?.groupName ||
-                    groups[item.id].groupid ||
+                    groups[item.id]?.groupid ||
                     item.id,
                 avatarUrl: defaultAvatarUrl,
             }
