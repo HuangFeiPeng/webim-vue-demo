@@ -1,13 +1,14 @@
 <template>
     <div class="conversations_container">
+        <!-- 搜索组件 -->
+        <SearchInput />
         <van-list
+            v-show="conversationList.length"
             v-model:loading="loading"
             :finished="finished"
             :finished-text="$t('conversations.nomore')"
             @load="onLoadConversations"
         >
-            <!-- 搜索组件 -->
-            <SearchInput />
             <van-swipe-cell v-for="item in conversationList" :key="item.id">
                 <div class="van-haptics-feedback conversation_item_box" @click="enterTheChatPage(item)">
                     <div class="avatar_box">
@@ -15,13 +16,15 @@
                             <img class="avatar_box_img" :src="mapConversationsInfo(item)?.avatarUrl" alt="" />
                         </van-badge>
                     </div>
-                    <div class="chat_infor_main">
-                        <p class="name">{{ mapConversationsInfo(item)?.name }}</p>
-                        <p class="last_msg">
-                            {{ handleLastMsgPreview(item) }}
-                        </p>
+                    <div class="chat_infor_main van-hairline--bottom">
+                        <div class="content">
+                            <p class="name">{{ mapConversationsInfo(item)?.name }}</p>
+                            <p class="last_msg">
+                                {{ handleLastMsgPreview(item) }}
+                            </p>
+                        </div>
+                        <div class="time">{{ handleLastMsgTime(item) }}</div>
                     </div>
-                    <div class="chat_infor_right">{{ handleLastMsgTime(item) }}</div>
                 </div>
                 <template #right>
                     <div class="conversation_swipe_right">
@@ -46,6 +49,12 @@
                 </template>
             </van-swipe-cell>
         </van-list>
+        <van-empty
+            v-show="!conversationList.length"
+            :image="emptyIcon"
+            image-size="80"
+            description="寻找自我，保持本色"
+        />
     </div>
 </template>
 
@@ -61,6 +70,8 @@ import { LAST_MSG_PREVIEW } from '@/constants/im'
 import { useFetchConversation } from '@/EaseIM/hooks'
 import SearchInput from '@/components/SearchInput/index.vue'
 import { ConversationBody, ConversationChatType } from '@/EaseIM/types/conversations'
+/* image */
+import emptyIcon from '@/assets/images/conversation/emptyicon@2x.png'
 /* dayjs */
 import Dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -90,8 +101,6 @@ const onLoadConversations = async () => {
         if (conversationList.value.length) {
             return (finished.value = false)
         } else {
-            console.log('>>>>>>调用接口拉取会话列表')
-            console.log('conversationList', conversationList.value.length)
             let res = await fetchConversionList({ pageNum: pageNum.value, pageSize: pageSize.value })
             if (!res.length) return (finished.value = true)
         }

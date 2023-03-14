@@ -1,66 +1,77 @@
-.conversations_container{
+.conversations_container {
     width: 100%;
     height: 100%;
-
 }
-.conversation_item_box{
-    padding:0 15px;
-    display:flex;
+.conversation_item_box {
+    height: 148px;
+    padding: 0 15px;
+    display: flex;
     flex-direction: row;
     align-items: center;
-    .avatar_box{
-        width: 80px;
-        height: 80px;
+    .avatar_box {
+        width: 92px;
+        height: 92px;
         background: #000;
-        border-radius: 5px;
-        img{
-            width: 80px;
-            height: 80px;
+        border-radius: 50%;
+        img {
+            width: 92px;
+            height: 92px;
         }
     }
-    .chat_infor_main{
-       max-width: 500px;
-        margin-left:20px;
-        display: flex;
-        flex-direction: column;
-        
-        .name{
-            display: inline-block;
-            width: 250px;
-            height: 50px;
-            line-height: 50px;
-            font-size: 20px;
-            font-weight: bold;
-            overflow: hidden;
-            text-overflow:ellipsis;
-            white-space: nowrap;
-        }
-        .last_msg{
-            display: inline-block;
-            height: 50px;
-            line-height: 50px;
-            font-size: 20px;
-            max-width: 85%;
-            font-weight: bold;
-            overflow: hidden;
-            text-overflow:ellipsis;
-            white-space: nowrap;
-           
-        }
-    }
-    .chat_infor_right{
+    .chat_infor_main {
         width: 100%;
-        height: 100%;
-        font-size: 15px;
-        text-align: right;
-        vertical-align: top;
-        padding: 15px 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 32px 0;
+        .content {
+            margin-left: 22px;
+            min-width: 450px;
+            display: flex;
+            flex-direction: column;
+            .name {
+                display: inline-block;
+                width: 86px;
+                height: 32px;
+                line-height: 50px;
+                font-size: 32px;
+                font-weight: 400;
+                color: #333333;
+                line-height: 32px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .last_msg {
+                display: inline-block;
+                max-width: 85%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width: 232px;
+                height: 32px;
+                font-size: 28px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #999999;
+                line-height: 32px;
+                margin-top: 20px;
+            }
+        }
+        .time {
+            // width: 60px;
+            height: 24px;
+            font-size: 24px;
+            font-weight: 400;
+            color: #999999;
+            line-height: 24px;
+        }
     }
 }
-.conversation_swipe_right{
+.conversation_swipe_right {
     background: #000;
     height: 100%;
-    button{
+    button {
         height: 100%;
     }
 }

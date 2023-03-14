@@ -31,7 +31,8 @@ export const useFetchConversation = () => {
                             }
                             conversationStore.createConversation({ ...channel })
                         })
-                    groupsStore.fetchGroupsInfos(groupSessionList)
+
+                    groupSessionList.length && groupsStore.fetchGroupsInfos(groupSessionList)
                     resolve(res?.data?.channel_infos)
                 })
                 .catch((error) => {

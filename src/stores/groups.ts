@@ -48,6 +48,7 @@ export const useGroupsStore = defineStore('groupsStore', {
             })
         },
         async fetchGroupsInfos(groupId: string | string[]) {
+            console.log('groupId', groupId)
             const res = await EChatClient.getGroupInfo({ groupId })
             if (res?.data) {
                 res.data.length &&
