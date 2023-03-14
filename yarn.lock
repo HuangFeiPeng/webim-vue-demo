@@ -3126,10 +3126,10 @@ duplexer@^0.1.2:
   resolved "https://registry.npmmirror.com/duplexer/-/duplexer-0.1.2.tgz"
   integrity sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==
 
-easemob-websdk@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.npmmirror.com/easemob-websdk/-/easemob-websdk-4.1.2.tgz"
-  integrity sha512-0qqMsprSCLaZ+7tia8gfFhiV0L94YGD6TmY2SySPWnevle7UH8XqSzXNG8cUW7jIOJGe7hSffUw577ww40F6aA==
+easemob-websdk@^4.1.4-beta:
+  version "4.1.4-beta"
+  resolved "https://registry.npmmirror.com/easemob-websdk/-/easemob-websdk-4.1.4-beta.tgz#91d290cd380bbcd213c479f6c50caa19b758f8df"
+  integrity sha512-RxDbdYOHeu/rvGqwBrhdxXilLgK1s6Kjbvx6ej+k03dsCouT5ydMRFP0Gpu2COJIWUcbtGvJb141sHsTHv92LA==
 
 easy-stack@1.0.1:
   version "1.0.1"
