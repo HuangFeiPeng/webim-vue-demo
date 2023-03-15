@@ -23,7 +23,7 @@ const EaseChatClient = new EaseChatSDK.connection({
     url: CUSTOM_CONFIG.imServer ? CUSTOM_CONFIG.imServer : DEFAULT_URL,
     apiUrl: CUSTOM_CONFIG.restServer
         ? `${CUSTOM_CONFIG.restServer}:${CUSTOM_CONFIG.port}`
-        : DEFAULT_APIURL,
+        : DEFAULT_APIURL
 })
 console.log('EaseIMClient', EaseChatClient)
 export { EaseChatSDK, EaseChatClient }

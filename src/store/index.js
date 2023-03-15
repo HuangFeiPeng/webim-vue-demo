@@ -13,13 +13,15 @@ export default createStore({
             hxId: '',
             nickname: '',
             avatarurl:
-        'https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image5.png',
+                'https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image5.png'
         },
         loginUserOnlineStatus: '',
+        chatbotName: 'hfp'
     },
     getters: {
         loginUserInfo: (state) => state.loginUserInfo,
         loginUserOnlineStatus: (state) => state.loginUserOnlineStatus,
+        chatbotName: (state) => state.chatbotName
     },
     mutations: {
         CLOSE_WARNING_TIPS: (state) => (state.isShowWarningTips = false),
@@ -37,9 +39,12 @@ export default createStore({
             console.log('payload', payload)
             state.loginUserOnlineStatus = payload
         },
+        SET_CHATBOT_NAME: (state, payload) => {
+            state.chatbotName = payload
+        }
     },
     actions: {
-    //获取登陆用户的用户属性
+        //获取登陆用户的用户属性
         getMyUserInfo: async ({ commit }, userId) => {
             const { data } = await EaseChatClient.fetchUserInfoById(userId)
             data[userId].hxId = userId
@@ -64,12 +69,12 @@ export default createStore({
 
                 commit('SET_FRIEND_PRESENCE', [{ ...status }])
             }
-        },
+        }
     },
     modules: {
         Conversation,
         Contacts,
         Message,
-        Groups,
-    },
+        Groups
+    }
 })

@@ -34,11 +34,11 @@ const toChatMessage = (id, chatType) => {
     })
 }
 //路由跳转-机器人
-const toChatbot = (id, chatType) => {
+const toChatbot = () => {
     router.push({
         path: '/chat/conversation/chatbot',
         query: {
-            id: 'hfp',
+            id: store.state.chatbotName,
             chatType: 'singleChat'
         }
     })
@@ -54,10 +54,10 @@ const toChatbot = (id, chatType) => {
                 @toChatMessage="toChatMessage"
             />
             <div class="chat_conversation_list">
-                <el-button @click="toChatbot">跳转至机器人页面</el-button>
                 <ConversationList
                     @toInformDetails="toInformDetails"
                     @toChatMessage="toChatMessage"
+                    @toChatbot="toChatbot"
                 />
             </div>
         </el-aside>
