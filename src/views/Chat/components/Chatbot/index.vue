@@ -129,11 +129,13 @@ const fechHistoryMessage = (loadType) => {
 //获取其id对应的消息内容
 const messageData = computed(() => {
     //如果Message.messageList中不存在的话调用拉取漫游取一下历史消息
-    return (
-        (nowPickInfo.value.id &&
-            store.state.Message.messageList[nowPickInfo.value.id]) ||
-        fechHistoryMessage('fistLoad')()
-    )
+    if (store.state.loginState) {
+        return (
+            (nowPickInfo.value.id &&
+                store.state.Message.messageList[nowPickInfo.value.id]) ||
+            fechHistoryMessage('fistLoad')()
+        )
+    }
 })
 
 const messageContainer = ref(null)
@@ -166,7 +168,7 @@ watch(
     (newMsg, oldMsg) => {
         nextTick(() => {
             //获取最后一条消息，如果不为当前登录ID则清除等待问答状态。
-            const lastMsg = newMsg[newMsg.length - 1]
+            const lastMsg = newMsg?.length && newMsg[newMsg.length - 1]
             if (lastMsg && lastMsg.from !== EaseChatClient.user) {
                 waitRobotReplyState.value = false
             }
@@ -237,7 +239,7 @@ watch(
                     <div v-show="isMoreHistoryMsg" class="chat_message_tips">
                         <div
                             v-show="
-                                messageData.length > 0 &&
+                                messageData?.length &&
                                 messageData[0].type !== 'inform'
                             "
                             class="load_more_msg"
