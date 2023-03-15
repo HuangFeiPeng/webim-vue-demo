@@ -26,6 +26,7 @@ EaseChatClient.addEventHandler('connection', {
     onDisconnected: () => {
         router.push('/login')
         store.commit('CHANGE_LOGIN_STATUS', false)
+        store.commit('INIT_MESSAGE_LIST')
     },
     onOnline: () => {
         store.commit('CHANGE_NETWORK_STATUS', true)

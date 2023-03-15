@@ -10,6 +10,10 @@ const Message = {
         messageList: {}
     },
     mutations: {
+        INIT_MESSAGE_LIST(state) {
+            console.log('>>>>重置消息缓存')
+            state.messageList = {}
+        },
         UPDATE_MESSAGE_LIST: (state, msgBody) => {
             const toUpdateMsgList = _.assign({}, state.messageList)
             const listKey = setMessageKey(msgBody)
