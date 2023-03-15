@@ -73,11 +73,22 @@ const fetchGroupList = () => {
     store.dispatch('fetchGroupList', pageParams)
 }
 //获取机器人name
+const CHAT_WELCOME =
+    '欢迎试用环信 Chatbot，我将解答您提出的任何问题。请注意，提问上限10次，超过上限后我将不再回答您的问题，请您谅解。'
 const getChatbotName = () => {
     fetchChatBotName()
         .then((res) => {
             if (res.code === 200) {
                 store.commit('SET_CHATBOT_NAME', res.robotName)
+                //创建一个空会话
+                const message = {
+                    from: res.robotName,
+                    to: EaseChatClient.user,
+                    chatType: 'singleChat',
+                    msg: CHAT_WELCOME,
+                    type: 'txt'
+                }
+                pushNewMessage(message)
             }
         })
         .catch((err) => {

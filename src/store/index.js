@@ -16,7 +16,7 @@ export default createStore({
                 'https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image5.png'
         },
         loginUserOnlineStatus: '',
-        chatbotName: 'hfp'
+        chatbotName: ''
     },
     getters: {
         loginUserInfo: (state) => state.loginUserInfo,

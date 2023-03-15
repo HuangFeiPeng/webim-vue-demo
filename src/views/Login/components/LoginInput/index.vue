@@ -44,60 +44,67 @@ const loginIM = async () => {
     clickRing()
     buttonLoading.value = true
     /* SDK 登陆的方式 */
-    // try {
-    //   let { accessToken } = await EaseChatClient.open({
-    //     user: loginValue.username.toLowerCase(),
-    //     pwd: loginValue.password.toLowerCase(),
-    //   });
-    //   window.localStorage.setItem(`EASEIM_loginUser`, JSON.stringify({ user: loginValue.username, accessToken: accessToken }))
-    // } catch (error) {
-    //   console.log('>>>>登陆失败', error);
-    //   const { data: { extraInfo } } = error
-    //   handleSDKErrorNotifi(error.type, extraInfo.errDesc);
-    //   loginValue.username = '';
-    //   loginValue.username = '';
-    // }
-    // finally {
-    //   buttonLoading.value = false;
-    // }
-    /*  !环信后台接口登陆（仅供环信线上demo使用！） */
-    const params = {
-        phoneNumber: loginValue.phoneNumber.toString(),
-        smsCode: loginValue.smsCode.toString()
-    }
     try {
-        const res = await fetchUserLoginToken(params)
-        if (res?.code === 200) {
-            console.log('>>>>>>登陆token获取成功', res.token)
-            EaseChatClient.open({
-                user: res.chatUserName.toLowerCase(),
-                accessToken: res.token
+        let { accessToken } = await EaseChatClient.open({
+            user: 'hfp',
+            pwd: '1'
+        })
+        window.localStorage.setItem(
+            `EASEIM_loginUser`,
+            JSON.stringify({
+                user: 'hfp',
+                accessToken: accessToken
             })
-            window.localStorage.setItem(
-                'EASEIM_loginUser',
-                JSON.stringify({
-                    user: res.chatUserName.toLowerCase(),
-                    accessToken: res.token
-                })
-            )
-        }
+        )
     } catch (error) {
         console.log('>>>>登陆失败', error)
-        if (error.response?.data) {
-            const { code, errorInfo } = error.response.data
-            if (errorInfo.includes('does not exist.')) {
-                ElMessage({
-                    center: true,
-                    message: `用户${loginValue.username}不存在！`,
-                    type: 'error'
-                })
-            } else {
-                handleSDKErrorNotifi(code, errorInfo)
-            }
-        }
+        const {
+            data: { extraInfo }
+        } = error
+        handleSDKErrorNotifi(error.type, extraInfo.errDesc)
+        loginValue.username = ''
+        loginValue.username = ''
     } finally {
         buttonLoading.value = false
     }
+    /*  !环信后台接口登陆（仅供环信线上demo使用！） */
+    // const params = {
+    //     phoneNumber: loginValue.phoneNumber.toString(),
+    //     smsCode: loginValue.smsCode.toString()
+    // }
+    // try {
+    //     const res = await fetchUserLoginToken(params)
+    //     if (res?.code === 200) {
+    //         console.log('>>>>>>登陆token获取成功', res.token)
+    //         EaseChatClient.open({
+    //             user: res.chatUserName.toLowerCase(),
+    //             accessToken: res.token
+    //         })
+    //         window.localStorage.setItem(
+    //             'EASEIM_loginUser',
+    //             JSON.stringify({
+    //                 user: res.chatUserName.toLowerCase(),
+    //                 accessToken: res.token
+    //             })
+    //         )
+    //     }
+    // } catch (error) {
+    //     console.log('>>>>登陆失败', error)
+    //     if (error.response?.data) {
+    //         const { code, errorInfo } = error.response.data
+    //         if (errorInfo.includes('does not exist.')) {
+    //             ElMessage({
+    //                 center: true,
+    //                 message: `用户${loginValue.username}不存在！`,
+    //                 type: 'error'
+    //             })
+    //         } else {
+    //             handleSDKErrorNotifi(code, errorInfo)
+    //         }
+    //     }
+    // } finally {
+    //     buttonLoading.value = false
+    // }
 }
 /* 短信验证码相关 */
 const isSenedAuthCode = ref(false)
@@ -168,13 +175,20 @@ const startCountDown = () => {
         <el-form-item>
             <div class="function_button_box">
                 <el-button
+                    class="haveValueBtn"
+                    :loading="buttonLoading"
+                    @click="loginIM"
+                    >登录</el-button
+                >
+
+                <!-- <el-button
                     v-if="loginValue.phoneNumber && loginValue.smsCode"
                     class="haveValueBtn"
                     :loading="buttonLoading"
                     @click="loginIM"
                     >登录</el-button
                 >
-                <el-button v-else class="notValueBtn">登录</el-button>
+                <el-button v-else class="notValueBtn">登录</el-button> -->
             </div>
         </el-form-item>
     </el-form>

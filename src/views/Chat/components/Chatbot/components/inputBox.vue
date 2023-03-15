@@ -3,6 +3,7 @@ import { ref, toRefs, defineProps } from 'vue'
 import { useStore } from 'vuex'
 import { handleSDKErrorNotifi } from '@/utils/handleSomeData'
 import { messageType } from '@/constant'
+import { ElMessage } from 'element-plus'
 import _ from 'lodash'
 /* 组件 */
 const store = useStore()
@@ -11,10 +12,14 @@ const props = defineProps({
         type: Object,
         required: true,
         default: () => ({})
+    },
+    waitRobotReplyState: {
+        type: Boolean,
+        default: false
     }
 })
 const { ALL_MESSAGE_TYPE, CHAT_TYPE } = messageType
-const { nowPickInfo } = toRefs(props)
+const { nowPickInfo, waitRobotReplyState } = toRefs(props)
 /* emits */
 const emits = defineEmits(['changeRobotReplayState'])
 /* 文本消息相关 */
@@ -23,6 +28,13 @@ const textContent = ref('')
 const sendTextMessage = _.debounce(async () => {
     //如果输入框全部为空格同样拒绝发送
     if (textContent.value.match(/^\s*$/)) return
+    if (waitRobotReplyState.value) {
+        return ElMessage({
+            type: 'warning',
+            message: '等待机器人回复完再问~',
+            center: true
+        })
+    }
     const msgOptions = {
         id: nowPickInfo.value.id,
         chatType: nowPickInfo.value.chatType,

@@ -267,6 +267,7 @@ watch(
             <InputBox
                 ref="inputBox"
                 :nowPickInfo="nowPickInfo"
+                :waitRobotReplyState="waitRobotReplyState"
                 @changeRobotReplayState="changeRobotReplayState"
             />
         </el-footer>

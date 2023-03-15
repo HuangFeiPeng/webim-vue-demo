@@ -7,7 +7,7 @@ import { EaseChatClient } from '@/IM/initwebsdk'
 import dateFormat from '@/utils/dateFormater'
 import { messageType } from '@/constant'
 /* 默认头像 */
-import defaultAvatar from '@/assets/images/avatar/theme2x.png'
+import defaultAvatar from '@/assets/images/avatar/chatbot.png'
 /* vuex store */
 const store = useStore()
 /* props */

@@ -24,7 +24,12 @@ const toInformDetails = () => {
 
 //路由跳转-对应好友会话
 const toChatMessage = (id, chatType) => {
-    console.log('>>>>>>>id', id)
+    //如果id发现是chatbot 直接跳转至chatbot页面
+    if (id === store.state.chatbotName) {
+        console.log('>>>>跳机器人页面')
+        toChatbot()
+        return
+    }
     router.push({
         path: '/chat/conversation/message',
         query: {

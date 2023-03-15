@@ -68,6 +68,14 @@ const networkStatus = computed(() => {
 })
 
 const emit = defineEmits(['toInformDetails', 'toChatMessage'])
+
+//chatbot 会话
+//判断是否是chatbot
+const isChatbot = computed(() => {
+    return (hxId) => {
+        return store.state.chatbotName === hxId
+    }
+})
 //普通会话
 const checkedConverItemIndex = ref(null)
 const toChatMessage = (item, itemKey, index) => {
@@ -95,30 +103,6 @@ const deleteConversation = (itemKey) => {
     <el-scrollbar class="session_list" style="overflow: auto" tag="ul">
         <li class="offline_hint" v-if="!networkStatus">
             <span class="plaint_icon">!</span> 网络不给力，请检查网络设置。
-        </li>
-        <!-- chatbot 会话 -->
-        <li class="session_list_item" @click="$emit('toChatbot')">
-            <div class="item_body item_left">
-                <!-- 通知头像 -->
-                <div class="session_other_avatar">
-                    <el-avatar :size="34" :src="chatbotIcon" />
-                </div>
-            </div>
-            <div class="item_body item_main">
-                <div class="name">Chatbot</div>
-                <div class="last_msg_body">chatbot:hahhahha</div>
-            </div>
-            <div class="item_body item_right">
-                <span class="time">{{
-                    dateFormater(
-                        'MM/DD/HH:mm',
-                        informDetail.lastInformDeatail.time
-                    )
-                }}</span>
-                <span class="unReadNum_box" v-if="false">
-                    <sup class="unReadNum_count"></sup>
-                </span>
-            </div>
         </li>
         <!-- 系统通知会话 -->
         <li
@@ -179,25 +163,39 @@ const deleteConversation = (itemKey) => {
                     trigger="contextmenu"
                     :show-arrow="false"
                     :offset="-10"
+                    :disabled="isChatbot(item.conversationKey)"
                 >
                     <template #reference>
                         <div class="session_list_item">
                             <div class="item_body item_left">
                                 <div class="session_other_avatar">
-                                    <el-avatar
-                                        :size="34"
-                                        :src="
-                                            friendList[item.conversationKey] &&
-                                            friendList[item.conversationKey]
-                                                .avatarurl
-                                                ? friendList[
-                                                      item.conversationKey
-                                                  ].avatarurl
-                                                : item.conversationInfo
-                                                      .avatarUrl
-                                        "
+                                    <template
+                                        v-if="!isChatbot(item.conversationKey)"
                                     >
-                                    </el-avatar>
+                                        <el-avatar
+                                            :size="34"
+                                            :src="
+                                                friendList[
+                                                    item.conversationKey
+                                                ] &&
+                                                friendList[item.conversationKey]
+                                                    .avatarurl
+                                                    ? friendList[
+                                                          item.conversationKey
+                                                      ].avatarurl
+                                                    : item.conversationInfo
+                                                          .avatarUrl
+                                            "
+                                        >
+                                        </el-avatar>
+                                    </template>
+                                    <template v-else>
+                                        <el-avatar
+                                            :size="34"
+                                            :src="chatbotIcon"
+                                        >
+                                        </el-avatar>
+                                    </template>
                                 </div>
                             </div>
                             <div class="item_body item_main">
