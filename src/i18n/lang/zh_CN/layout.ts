@@ -7,6 +7,7 @@ export default {
         me: '我的',
         back: '返回',
         chat: '聊天',
+        systemnotification: '系统通知',
     },
     tabbar: {
         conversations: '会话',

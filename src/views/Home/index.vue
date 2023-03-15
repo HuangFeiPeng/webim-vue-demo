@@ -1,7 +1,14 @@
 <template>
     <div class="app_container">
         <!-- NavBar -->
-        <nav-bar v-show="isShowNavBar" :is-actions="true" :is-more="false" :title="navBarTitle" @onSelect="onSelect" />
+        <nav-bar
+            v-show="isShowNavBar"
+            :is-back="isShowBack"
+            :is-actions="isShowAction"
+            :is-more="false"
+            :title="navBarTitle"
+            @onSelect="onSelect"
+        />
         <!-- Main -->
         <router-view></router-view>
         <!-- TabBar -->
@@ -13,8 +20,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import type { RouteRecordName, RouteLocationNormalizedLoaded } from 'vue-router'
-import { useEMMessagesListener } from '@/EaseIM/hooks'
-import { useConversationStore } from '@/stores'
+import { useEMMessagesListener, useContactsListener } from '@/EaseIM/hooks'
+import { useConversationStore, useSystemNotfiStore } from '@/stores'
 import _ from 'lodash'
 import { useI18n } from 'vue-i18n'
 import './index.scss'
@@ -27,6 +34,14 @@ const route: RouteLocationNormalizedLoaded = useRoute()
 const isShowNavBar = computed(() => {
     const needNavBar = route.meta.needNavBar
     return needNavBar
+})
+const isShowBack = computed(() => {
+    const isShowBack = (route.meta?.needBack as boolean) || false
+    return isShowBack
+})
+const isShowAction = computed(() => {
+    const isShowAction = (route.meta?.needAction as boolean) || false
+    return isShowAction
 })
 /* 标题国际化 */
 const { t } = useI18n()
@@ -41,10 +56,15 @@ const onSelect = (type: string) => {
 
 /* TabBar */
 const converationStore = useConversationStore()
+const systemNotfiStore = useSystemNotfiStore()
+//tabbar未读数
 const fullUnReadNum = computed(() => {
     let sum = 0
     if (converationStore.getConversationListvalues.length) {
         converationStore.getConversationListvalues.forEach((item) => (sum += item.unReadNum))
+    }
+    if (systemNotfiStore.unReadNotifCount > 0) {
+        sum += systemNotfiStore.unReadNotifCount
     }
     return sum || ''
 })
@@ -56,4 +76,5 @@ const isShowTabBar = computed(() => {
 
 /* EaseIM Listener */
 useEMMessagesListener()
+useContactsListener()
 </script>

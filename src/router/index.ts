@@ -41,6 +41,7 @@ const routes: Array<RouteRecordRaw> = [
                     title: '最近会话',
                     needNavBar: true,
                     needTabBar: true,
+                    needAction: true,
                 },
             },
             {
@@ -70,7 +71,19 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     title: '聊天',
                     needNavBar: false,
+                    needAction: false,
+                },
+            },
+            {
+                path: 'systemnotification',
+                name: 'systemnotification',
+                component: () => import('../views/SystemNotification/index.vue'),
+                meta: {
+                    title: '系统通知',
+                    needNavBar: true,
                     needTabBar: false,
+                    needBack: true,
+                    needMore: false,
                 },
             },
         ],

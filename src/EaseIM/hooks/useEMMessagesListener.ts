@@ -1,13 +1,14 @@
 /* 环信消息监听回调 */
 import { onBeforeMount, onUnmounted } from 'vue'
 import { EChatClient } from '../index'
+import { LISTENNER_EVENT_NAME } from '../types'
 import { useConversationStore } from '@/stores/conversations'
 import { useMessagesStore } from '@/stores/messages'
 export const useEMMessagesListener = () => {
     const conversationStore = useConversationStore()
     const messagesStore = useMessagesStore()
     onBeforeMount(() => {
-        EChatClient.addEventHandler('emMessages', {
+        EChatClient.addEventHandler(LISTENNER_EVENT_NAME.messages, {
             // 当前用户收到文本消息。
             onTextMessage: function (message) {
                 console.log('%cEaseIM onTextMessage', 'color:green;', message)
@@ -62,6 +63,6 @@ export const useEMMessagesListener = () => {
         })
     })
     onUnmounted(() => {
-        EChatClient.removeEventHandler('emMessages')
+        EChatClient.removeEventHandler(LISTENNER_EVENT_NAME.messages)
     })
 }

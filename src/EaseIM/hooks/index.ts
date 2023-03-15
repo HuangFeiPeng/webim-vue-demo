@@ -4,6 +4,7 @@ import { useEMMessagesListener } from './useEMMessagesListener'
 import { useFetchConversation } from './useFetchConversation'
 import { useFetchHistoryMessages } from './useFetchHistoryMessages'
 import { useSendDisplayMsg } from './useSendDisplayMsg'
+import { useContactsListener } from './useEMContactsListener'
 export {
     useEMLogin,
     useEMConnectListener,
@@ -11,4 +12,5 @@ export {
     useFetchConversation,
     useFetchHistoryMessages,
     useSendDisplayMsg,
+    useContactsListener,
 }

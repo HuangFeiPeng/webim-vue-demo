@@ -7,6 +7,7 @@ export default {
         me: 'Me',
         chat: 'Chats',
         back: 'back',
+        systemnotification: 'systemnotification',
     },
     tabbar: {
         conversations: 'Conversations',

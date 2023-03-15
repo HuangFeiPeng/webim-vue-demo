@@ -2,12 +2,14 @@
 import { onBeforeMount, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { EChatClient } from '../index'
-import { useLoginStore, useContactsStore, useGroupsStore } from '@/stores'
+import { LISTENNER_EVENT_NAME } from '../types'
+import { useLoginStore, useContactsStore, useGroupsStore, useSystemNotfiStore } from '@/stores'
 export const useEMConnectListener = () => {
     const router = useRouter()
     const loginStore = useLoginStore()
     const contactsStore = useContactsStore()
     const groupsStore = useGroupsStore()
+    const systemNotfiStore = useSystemNotfiStore()
     const initLoginNeedData = async () => {
         const loginHxId = EChatClient.user
         loginStore.isLogined = false
@@ -15,9 +17,10 @@ export const useEMConnectListener = () => {
         loginStore.fetchLoginUserProfile()
         contactsStore.fetchContactsData(true)
         groupsStore.fetchJoinedGroups()
+        systemNotfiStore.initSystemNotfiList()
     }
     onBeforeMount(() => {
-        EChatClient.addEventHandler('emConnect', {
+        EChatClient.addEventHandler(LISTENNER_EVENT_NAME.connect, {
             onConnected: () => {
                 console.log('%cEaseIM 已连接', 'color:green;')
                 router.replace('/home')
@@ -30,6 +33,6 @@ export const useEMConnectListener = () => {
         })
     })
     onUnmounted(() => {
-        EChatClient.removeEventHandler('emConnect')
+        EChatClient.removeEventHandler(LISTENNER_EVENT_NAME.connect)
     })
 }

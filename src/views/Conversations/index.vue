@@ -8,6 +8,26 @@
             :finished-text="$t('conversations.nomore')"
             @load="onLoadConversations"
         >
+            <!-- 系统通知逻辑 -->
+            <div
+                v-if="systemNotfiData"
+                class="van-haptics-feedback conversation_item_box"
+                @click="enterTheSystemNotfiPage"
+            >
+                <div class="avatar_box">
+                    <van-badge :content="unReadSystemNotfiCount" max="99" :show-zero="false">
+                        <img class="avatar_box_img" :src="informAvatar" alt="" />
+                    </van-badge>
+                </div>
+                <div class="chat_infor_main van-hairline--bottom">
+                    <div class="content">
+                        <p class="name">系统通知</p>
+                        <p class="last_msg">{{ systemNotfiData?.from }} :{{ systemNotfiData?.content }}</p>
+                    </div>
+                    <div class="time">{{ systemNotfiData?.time && handleLastMsgTime(systemNotfiData?.time) }}</div>
+                </div>
+            </div>
+            <!-- 普通会话 -->
             <van-swipe-cell v-for="item in conversationList" :key="item.id">
                 <div class="van-haptics-feedback conversation_item_box" @click="enterTheChatPage(item)">
                     <div class="avatar_box">
@@ -22,7 +42,7 @@
                                 {{ handleLastMsgPreview(item) }}
                             </p>
                         </div>
-                        <div class="time">{{ handleLastMsgTime(item) }}</div>
+                        <div class="time">{{ handleLastMsgTime(item.time) }}</div>
                     </div>
                 </div>
                 <template #right>
@@ -52,19 +72,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, unref, toRaw } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 /* pinia */
-import { useConversationStore, useContactsStore, useGroupsStore } from '@/stores'
+import { useConversationStore, useContactsStore, useGroupsStore, useSystemNotfiStore } from '@/stores'
 /* vue-router */
 import { useRouter } from 'vue-router'
 /* IM */
+import { EChatClient } from '@/EaseIM'
 import { LAST_MSG_PREVIEW } from '@/constants/im'
 import { useFetchConversation } from '@/EaseIM/hooks'
 import SearchInput from '@/components/SearchInput/index.vue'
 import { ConversationBody, ConversationChatType } from '@/EaseIM/types/conversations'
+import { SystemNotfiParams } from '@/EaseIM/types'
 /* image */
 import emptyIcon from '@/assets/images/conversation/emptyicon@2x.png'
+import informAvatar from '@/assets/images/conversation/informAvatar.png'
 /* dayjs */
 import Dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -154,25 +178,52 @@ const handleLastMsgPreview = computed(() => {
     }
 })
 
-/* 处理会话时间展示 */
+/* 系统通知 */
+const systemNotfiStore = useSystemNotfiStore()
+//订阅该系统通知内的数据变化执行本地缓存
+systemNotfiStore.$subscribe(
+    (mutation, state) => {
+        // console.log('JSON.stringify(state.systemNotificationList)', JSON.stringify(state.systemNotificationList))
+        const storageData = JSON.stringify(state.systemNotificationList)
+        window.localStorage.setItem(`EM_${EChatClient.user}_INFORM`, storageData)
+    },
+    { detached: true },
+)
+const systemNotfiData = computed(() => {
+    const _index = systemNotfiStore.systemNotificationList.length - 1
+    return systemNotfiStore.systemNotificationList[_index]
+})
+//取出未读系统通知数
+const unReadSystemNotfiCount = computed(() => {
+    return systemNotfiStore.unReadNotifCount
+})
+/* 处理时间展示 */
 const { t } = useI18n()
 const handleLastMsgTime = computed(() => {
-    return (item: ConversationBody) => {
+    return (time: number | string) => {
         const currentTime = Dayjs()
         //使用Dayjs库比对当前时间与消息发送时间大于24小时展示不同的时间格式
-        if (Dayjs(currentTime).diff(item.time, 'hour') < 12) {
-            return Dayjs(item.time).format('HH:mm(a)')
+        if (Dayjs(currentTime).diff(time, 'hour') < 12) {
+            return Dayjs(time).format('HH:mm(a)')
         }
-        if (Dayjs(currentTime).diff(item.time, 'hour') <= 24) {
-            return Dayjs(item.time).format(`${t('conversations.yesterday')}HH:mm(a)`)
+        if (Dayjs(currentTime).diff(time, 'hour') <= 24) {
+            return Dayjs(time).format(`${t('conversations.yesterday')}HH:mm(a)`)
         } else {
-            return Dayjs(item.time).format('YYYY/MM/DD')
+            return Dayjs(time).format('YYYY/MM/DD')
         }
     }
 })
 
-/* 进入聊天界面 */
+/* 页面跳转 */
 const router = useRouter()
+//跳转至系统通知页面
+const enterTheSystemNotfiPage = () => {
+    router.push({
+        name: 'systemnotification',
+    })
+}
+
+//跳转至聊天页
 const enterTheChatPage = (chatParams: ConversationBody) => {
     console.log('>>>>>>chatParams', chatParams)
     const { id, chatType, unReadNum } = chatParams
