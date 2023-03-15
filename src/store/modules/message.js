@@ -1,6 +1,7 @@
 import { EaseChatSDK, EaseChatClient } from '@/IM/initwebsdk'
 import { setMessageKey, createMessage } from '@/utils/handleSomeData'
 import _ from 'lodash'
+import store from '@/store'
 // import { ref, toRaw } from 'vue';
 import { messageType } from '@/constant'
 import { usePlayRing } from '@/hooks'
@@ -82,7 +83,7 @@ const Message = {
             dispatch('gatherConversation', key)
         },
         //获取历史消息
-        getHistoryMessage: async ({ dispatch, commit }, params) => {
+        getHistoryMessage: async ({ state, dispatch, commit }, params) => {
             const { id, chatType, cursor } = params
             return new Promise((resolve, reject) => {
                 const options = {
@@ -105,7 +106,13 @@ const Message = {
                             historyMessage: _.reverse(messages)
                         })
                         //提示会话列表更新
-                        dispatch('gatherConversation', id)
+                        console.log('state', store.state.Conversation)
+                        const conversationListData =
+                            store.state.Conversation.conversationListData
+                        //如果当前的id已经存在会话，漫游由于非最新消息所以不需要更新会话列表。
+                        if (!conversationListData[id]) {
+                            dispatch('gatherConversation', id)
+                        }
                     })
                     .catch((error) => {
                         reject(error)
