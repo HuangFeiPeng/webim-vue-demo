@@ -133,7 +133,7 @@ const openStatement = () =>
                     <!-- 文本类型消息 -->
                     <span>
                         <p
-                            style="padding: 10px"
+                            style="padding: 10px; line-height: 20px"
                             v-if="msgBody.type === ALL_MESSAGE_TYPE.TEXT"
                         >
                             {{ msgBody.msg }}
