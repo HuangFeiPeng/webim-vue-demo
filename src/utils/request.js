@@ -1,5 +1,5 @@
 import axios from 'axios'
-const defaultBaseUrl = '//a1.easemob.com'
+const defaultBaseUrl = '//a41.easemob.com'
 // create an axios instance
 const service = axios.create({
     withCredentials: false,
