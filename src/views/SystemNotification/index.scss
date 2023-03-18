@@ -1,0 +1,38 @@
+.systemnotifi_container {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    .systemnotifi_container_card {
+        height: 200px;
+        background: pink;
+        .time {
+            width: 100%;
+            text-align: center;
+            font-size: 13px;
+        }
+        .card_body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            .card_content {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                .avatar {
+                    width: 92px;
+                    height: 92px;
+                    border-radius: 50%;
+                }
+                .content {
+                    width: 100%;
+                }
+            }
+            .card_footer {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+            }
+        }
+    }
+}
