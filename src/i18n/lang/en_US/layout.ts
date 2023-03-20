@@ -8,6 +8,7 @@ export default {
         chat: 'Chats',
         back: 'back',
         systemnotification: 'systemnotification',
+        addfriends: 'addfriends',
     },
     tabbar: {
         conversations: 'Conversations',

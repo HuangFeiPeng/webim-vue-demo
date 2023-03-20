@@ -86,6 +86,18 @@ const routes: Array<RouteRecordRaw> = [
                     needMore: false,
                 },
             },
+            {
+                path: 'addfriends',
+                name: 'addfriends',
+                component: () => import('../views/AddFriends/index.vue'),
+                meta: {
+                    title: '添加好友',
+                    needNavBar: true,
+                    needTabBar: false,
+                    needBack: true,
+                    needMore: false,
+                },
+            },
         ],
     },
 ]

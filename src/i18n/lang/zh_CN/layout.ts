@@ -8,6 +8,7 @@ export default {
         back: '返回',
         chat: '聊天',
         systemnotification: '系统通知',
+        addfriends: '添加好友',
     },
     tabbar: {
         conversations: '会话',

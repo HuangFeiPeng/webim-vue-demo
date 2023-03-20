@@ -28,6 +28,7 @@ import './index.scss'
 /* 组件 */
 import NavBar from '@/layout/NavBar/index.vue'
 import TabBar from '@/layout/TabBar/index.vue'
+import router from '@/router'
 const route: RouteLocationNormalizedLoaded = useRoute()
 /* NavBar */
 //是否展示NavBar
@@ -52,6 +53,10 @@ const navBarTitle = computed(() => {
 //navBar select触发
 const onSelect = (type: string) => {
     console.log('>>>>>>', type)
+    //添加好友
+    if (type === 'manager') {
+        router.push('addfriends')
+    }
 }
 
 /* TabBar */
