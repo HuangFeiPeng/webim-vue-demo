@@ -30,5 +30,18 @@ export const useSystemNotfiStore = defineStore('systemNotfiStore', {
             this.$state.systemNotificationList = systemNotificationList
             console.log('addSystemNotfi')
         },
+        //更改系统通知处理状态
+        updateSystemNotfiStatus(index: number, handleType: 'agree' | 'reject'): void {
+            const systemNotificationList = this.$state.systemNotificationList
+            if (handleType === 'agree') {
+                systemNotificationList[index].isReaded = true
+                systemNotificationList[index].confirm = true
+            }
+            if (handleType === 'reject') {
+                systemNotificationList[index].isReaded = true
+                systemNotificationList[index].reject = true
+            }
+        },
+        //删除一条系统通知
     },
 })

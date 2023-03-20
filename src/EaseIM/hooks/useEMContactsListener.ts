@@ -21,6 +21,7 @@ export const useContactsListener = () => {
                     type,
                     time: Date.now(),
                     isReaded: false,
+                    isNeedHandle: true,
                 }
                 systemNotfiStore.addSystemNotfi(params)
             },
