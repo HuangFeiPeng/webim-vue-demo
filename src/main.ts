@@ -28,6 +28,8 @@ import {
     Popup,
     Checkbox,
     Empty,
+    Col,
+    Row,
 } from 'vant'
 import { Image as VanImage } from 'vant'
 /* i18n */
@@ -65,6 +67,8 @@ app.use(Icon)
     .use(Popup)
     .use(Checkbox)
     .use(Empty)
+    .use(Col)
+    .use(Row)
 /* i18n */
 app.use(i18n)
 app.mount('#app')
