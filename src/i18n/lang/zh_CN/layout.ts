@@ -9,6 +9,8 @@ export default {
         chat: '聊天',
         systemnotification: '系统通知',
         addfriends: '添加好友',
+        selectcontacts: '选择联系人',
+        creategroups: '创建群组',
     },
     tabbar: {
         conversations: '会话',

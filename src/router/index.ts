@@ -87,6 +87,18 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
             {
+                path: 'selectcontacts',
+                name: 'selectcontacts',
+                component: () => import('../views/SelectContacts/index.vue'),
+                meta: {
+                    title: '选择联系人',
+                    needNavBar: false,
+                    needTabBar: false,
+                    needBack: true,
+                    needMore: false,
+                },
+            },
+            {
                 path: 'addfriends',
                 name: 'addfriends',
                 component: () => import('../views/AddFriends/index.vue'),
@@ -95,6 +107,18 @@ const routes: Array<RouteRecordRaw> = [
                     needNavBar: true,
                     needTabBar: false,
                     needBack: true,
+                    needMore: false,
+                },
+            },
+            {
+                path: 'creategroups',
+                name: 'creategroups',
+                component: () => import('../views/CreateGroups/index.vue'),
+                meta: {
+                    title: '创建群组',
+                    needNavBar: false,
+                    needTabBar: false,
+                    needBack: false,
                     needMore: false,
                 },
             },

@@ -56,9 +56,8 @@ const emits = defineEmits<{
 const showPopover = ref(false)
 // 通过 actions 属性来定义菜单选项
 const actions = [
-    { text: '发起会话', icon: 'chat' },
+    { text: '创建群组', icon: 'friends' },
     { text: '添加好友', icon: 'manager' },
-    { text: '添加群组', icon: 'friends' },
 ]
 const emitSelect = (action: Iaction) => {
     console.log('>>>>>1111', action)

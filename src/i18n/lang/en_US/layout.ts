@@ -9,6 +9,8 @@ export default {
         back: 'back',
         systemnotification: 'systemnotification',
         addfriends: 'addfriends',
+        selectcontacts: 'selectcontacts',
+        creategroups: 'creategroups',
     },
     tabbar: {
         conversations: 'Conversations',

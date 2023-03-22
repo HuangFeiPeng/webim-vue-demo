@@ -26,10 +26,13 @@ import {
     PullRefresh,
     Toast,
     Popup,
-    Checkbox,
     Empty,
     Col,
     Row,
+    Checkbox,
+    CheckboxGroup,
+    Switch,
+    Dialog,
 } from 'vant'
 import { Image as VanImage } from 'vant'
 /* i18n */
@@ -69,6 +72,9 @@ app.use(Icon)
     .use(Empty)
     .use(Col)
     .use(Row)
+    .use(CheckboxGroup)
+    .use(Switch)
+    .use(Dialog)
 /* i18n */
 app.use(i18n)
 app.mount('#app')

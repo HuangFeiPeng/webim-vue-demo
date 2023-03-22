@@ -57,6 +57,10 @@ const onSelect = (type: string) => {
     if (type === 'manager') {
         router.push('addfriends')
     }
+    if (type === 'friends') {
+        //nextToRouterName 为选择联系人页面点击完成所需跳转的路由name
+        router.push({ name: 'selectcontacts', query: { nextToRouterName: 'creategroups' } })
+    }
 }
 
 /* TabBar */
