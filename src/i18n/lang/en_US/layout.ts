@@ -11,6 +11,7 @@ export default {
         addfriends: 'addfriends',
         selectcontacts: 'selectcontacts',
         creategroups: 'creategroups',
+        editgroupdescription: 'editgroupdescription',
     },
     tabbar: {
         conversations: 'Conversations',

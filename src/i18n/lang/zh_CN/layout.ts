@@ -11,6 +11,7 @@ export default {
         addfriends: '添加好友',
         selectcontacts: '选择联系人',
         creategroups: '创建群组',
+        editgroupdescription: '编辑群组简介',
     },
     tabbar: {
         conversations: '会话',

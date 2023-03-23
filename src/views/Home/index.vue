@@ -10,18 +10,22 @@
             @onSelect="onSelect"
         />
         <!-- Main -->
-        <router-view></router-view>
+        <router-view v-slot="{ Component }">
+            <keep-alive :include="routerKeepAliveList">
+                <component :is="Component" />
+            </keep-alive>
+        </router-view>
         <!-- TabBar -->
         <tab-bar v-show="isShowTabBar" :badge="fullUnReadNum" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import type { RouteRecordName, RouteLocationNormalizedLoaded } from 'vue-router'
 import { useEMMessagesListener, useContactsListener } from '@/EaseIM/hooks'
-import { useConversationStore, useSystemNotfiStore } from '@/stores'
+import { useRouterKeepAliveStore, useConversationStore, useSystemNotfiStore } from '@/stores'
 import _ from 'lodash'
 import { useI18n } from 'vue-i18n'
 import './index.scss'
@@ -30,6 +34,11 @@ import NavBar from '@/layout/NavBar/index.vue'
 import TabBar from '@/layout/TabBar/index.vue'
 import router from '@/router'
 const route: RouteLocationNormalizedLoaded = useRoute()
+/* keep-alive */
+const routerKeepAliveStore = useRouterKeepAliveStore()
+const routerKeepAliveList = computed(() => {
+    return routerKeepAliveStore.keepAliveComponentList
+})
 /* NavBar */
 //是否展示NavBar
 const isShowNavBar = computed(() => {
@@ -83,6 +92,8 @@ const isShowTabBar = computed(() => {
     return needTabBar
 })
 
+const Instance = getCurrentInstance()
+console.log('>>>>Instance', Instance)
 /* EaseIM Listener */
 useEMMessagesListener()
 useContactsListener()

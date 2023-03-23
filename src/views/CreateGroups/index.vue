@@ -15,7 +15,12 @@
                 :value="createNewGroupsForm.groupname || '请输入群组名称'"
                 @click="showDialog('groupname')"
             />
-            <van-cell title="简介" is-link :value="createNewGroupsForm.desc || '请输入群组简介'" />
+            <van-cell
+                title="简介"
+                is-link
+                :value="createNewGroupsForm.desc || '请输入群组简介'"
+                @click="enterEditGroupDescPage"
+            />
             <van-cell title="群组人数" is-link :value="createNewGroupsForm.maxusers" @click="showDialog('maxusers')" />
         </van-cell-group>
         <van-cell-group>
@@ -69,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, watch, computed, onMounted, onBeforeUnmount } from 'vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -111,8 +116,23 @@ const createNewGroupsForm = reactive<CreateNewGroupsInterface>({
     inviteNeedConfirm: false, //暂时未启用
 })
 onMounted(() => {
-    createNewGroupsForm.members = route?.query?.checkedList as string[]
+    if (route.query?.checkedList?.length) {
+        createNewGroupsForm.members = route?.query?.checkedList as string[]
+    }
 })
+const watchEditGroupsDesc = watch(
+    () => route.query,
+    (newVal, oldVal) => {
+        if (newVal?.groupDescripion) {
+            createNewGroupsForm.desc = newVal?.groupDescripion as string
+        }
+    },
+    {
+        immediate: true,
+    },
+)
+//页面卸载终止监听
+onBeforeUnmount(() => watchEditGroupsDesc())
 //编辑创建群内容（群名&群人数）
 type ShowDialogType = 'groupname' | 'maxusers'
 const SHOWDIALOG_TITLE = {
@@ -143,9 +163,20 @@ const actionCreateNewGroups = async () => {
         console.log('>>>>创建失败')
     }
 }
+interface QueryInterface {
+    [index: string]: string
+}
+const enterEditGroupDescPage = () => {
+    const query: QueryInterface = {}
+    if (createNewGroupsForm.desc) query.groupDescripion = createNewGroupsForm.desc
+    router.push({
+        name: 'editgroupdescription',
+        query,
+    })
+}
 </script>
 
 <style lang="scss" scoped>
-.creategroups_container {
-}
+// .creategroups_container {
+// }
 </style>

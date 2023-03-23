@@ -122,6 +122,18 @@ const routes: Array<RouteRecordRaw> = [
                     needMore: false,
                 },
             },
+            {
+                path: 'editgroupdescription',
+                name: 'editgroupdescription',
+                component: () => import('../views/CreateGroups/editGroupDesc.vue'),
+                meta: {
+                    title: '编辑群组详情',
+                    needNavBar: false,
+                    needTabBar: false,
+                    needBack: false,
+                    needMore: false,
+                },
+            },
         ],
     },
 ]
