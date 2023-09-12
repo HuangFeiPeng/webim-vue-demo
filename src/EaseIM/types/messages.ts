@@ -8,6 +8,7 @@ export type EMMsgType =
     | EasemobChat.AudioMsgBody
     | EasemobChat.CustomMsgBody
     | EasemobChat.VideoMsgBody
+    | EasemobChat.CombineMsgBody
 
 export type MessageType = EasemobChat.MessageBody
 export type EMCreateMsg =
@@ -21,3 +22,4 @@ export type EMCreateMsg =
     | EasemobChat.CreateAudioMsgParameters
 type AllowedMsgType = 'txt' | 'img' | 'file' | 'custom' | 'video' | 'audio'
 export type EMCreateMsgBodyType = EMCreateMsg & { time: number | string; type: AllowedMsgType; thumb?: string }
+export type EMHistoryMsgChatType = 'singleChat' | 'groupChat'

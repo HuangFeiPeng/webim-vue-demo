@@ -1,10 +1,11 @@
 import { ref } from 'vue'
 import { useMessagesStore } from '@/stores'
 import _ from 'lodash'
-import { EChatClient, EasemobChat } from '@/EaseIM'
+import { EChatClient } from '@/EaseIM'
+import { EMHistoryMsgChatType } from '../types/messages'
 interface FetchHistoryMsgParams {
     targetId: string
-    chatType: EasemobChat.ChatType
+    chatType: EMHistoryMsgChatType
     cursor?: string
     pageSize?: number
 }

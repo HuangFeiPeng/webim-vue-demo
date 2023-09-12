@@ -14,7 +14,7 @@
         "chimee-mobile-player": "^0.3.0",
         "core-js": "^3.8.3",
         "dayjs": "^1.11.7",
-        "easemob-websdk": "^4.1.4-beta",
+        "easemob-websdk": "^4.2.0",
         "eruda": "^2.11.2",
         "grapheme-splitter": "^1.0.4",
         "lodash": "^4.17.21",
