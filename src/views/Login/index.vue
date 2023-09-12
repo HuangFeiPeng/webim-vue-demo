@@ -54,7 +54,7 @@ import loginLogo from '@/assets/images/login/loginIcon.png'
 const loginParams = reactive({
     phoneNumber: '',
     username: 'hfp',
-    password: '2',
+    password: '1',
     smsCode: '',
 })
 const isAgree = ref(false)
