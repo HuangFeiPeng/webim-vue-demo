@@ -6,7 +6,7 @@ import {
     createInform
 } from '@/utils/handleSomeData'
 import Message from './message'
-import { EaseChatClient } from '@/IM/initwebsdk'
+import { EaseChatClient, EaseChatSDK } from '@/IM/initwebsdk'
 import { informType, messageType } from '@/constant'
 const { INFORM_FROM } = informType
 const { CHAT_TYPE } = messageType
@@ -70,8 +70,12 @@ const Conversation = {
             state.conversationListData = _.assign({}, toUpdateConversation)
         },
         //清除会话未读状态
-        CLEAR_UNREAD_NUM: (state, key) => {
-            state.conversationListData[key].unreadMessageNum = 0
+        CLEAR_UNREAD_COUNT: (state, conversationId) => {
+            state.conversationList.forEach((conversationItem) => {
+                if (conversationItem.conversationId === conversationId) {
+                    conversationItem.unReadCount = 0
+                }
+            })
         },
         //清除会话@状态
         CLEAR_AT_STATUS: (state, index) => {
@@ -309,9 +313,35 @@ const Conversation = {
                     conversationId,
                     conversationType: chatType
                 })
+                console.log('>>>>>>>更新完成', result.data)
                 commit('UPDATE_CONVERSATION_LIST', { ...result.data })
             } catch (error) {
                 console.log('>>>>>>>获取本地会话更新失败', error)
+            }
+        },
+        //设置会话已读（发送会话已读回执。）
+        clearConversationUnreadCount: async ({ dispatch, commit }, params) => {
+            const { conversationId, chatType } = params
+            console.log('>>>>>>>clearConversationUnreadCount', params)
+            const option = {
+                chatType: chatType, // 会话类型，设置为单聊。
+                type: 'channel', // 消息类型。
+                to: conversationId // 接收消息对象的用户 ID。
+            }
+            try {
+                //只有发送了会话已读回执远端服务器的会话未读数才会清空。
+                const msg = EaseChatSDK.message.create(option)
+                const res = await EaseChatClient.send(msg)
+                console.log('>>>>>>channel ack send success', res)
+                //同步清空本地数据库未读数。
+                await EaseChatClient.clearConversationUnreadCount({
+                    conversationId,
+                    conversationType: chatType
+                })
+                //通知更新缓存中的会话未读数。
+                commit('CLEAR_UNREAD_COUNT', conversationId)
+            } catch (error) {
+                console.log('>>>>>未读数清空失败', error)
             }
         }
     }

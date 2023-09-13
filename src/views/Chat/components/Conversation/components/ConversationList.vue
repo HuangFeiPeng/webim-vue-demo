@@ -83,11 +83,17 @@ const networkStatus = computed(() => {
 const emit = defineEmits(['toInformDetails', 'toChatMessage'])
 //普通会话
 const checkedConverItemIndex = ref(null)
-const toChatMessage = (item, index) => {
+const entryChatMessage = (item, index) => {
     const conversationId = item.conversationId
     checkedConverItemIndex.value = index
-    if (item && item.unReadCount > 0)
-        store.commit('CLEAR_UNREAD_NUM', conversationId)
+    if (item && item.unReadCount > 0) {
+        console.log('>>>>>执行清除会话未读数')
+        store.dispatch('clearConversationUnreadCount', {
+            conversationId: conversationId,
+            chatType: item.conversationType
+        })
+    }
+
     // if (item.isMention) store.commit('CLEAR_AT_STATUS', conversationId)
     //跳转至对应的消息界面
     emit('toChatMessage', conversationId, item.conversationType)
@@ -158,7 +164,7 @@ const deleteConversation = (itemKey) => {
             <li
                 v-for="(item, index) in conversationList"
                 :key="item.conversationId"
-                @click="toChatMessage(item, index)"
+                @click="entryChatMessage(item, index)"
                 :style="{
                     background:
                         checkedConverItemIndex === index ? '#E5E5E5' : ''
@@ -218,14 +224,14 @@ const deleteConversation = (itemKey) => {
                                 }}</span>
                                 <span
                                     class="unReadNum_box"
-                                    v-if="item.unreadMessageNum >= 1"
+                                    v-if="item.unReadCount >= 1"
                                 >
                                     <sup
                                         class="unReadNum_count"
                                         v-text="
-                                            item.unreadMessageNum >= 99
+                                            item.unReadCount >= 99
                                                 ? '99+'
-                                                : item.unreadMessageNum
+                                                : item.unReadCount
                                         "
                                     ></sup>
                                 </span>
