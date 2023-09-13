@@ -13,7 +13,8 @@ const { CHAT_TYPE } = messageType
 const Conversation = {
     state: {
         informDetail: [],
-        conversationListData: {}
+        conversationListData: {},
+        conversationList: []
     },
     mutations: {
         //初始化会话列表的数据（根据登陆的id取其对应的会话数据）
@@ -82,7 +83,6 @@ const Conversation = {
             console.log('>>>>>执行清除卡片未读', index)
             state.informDetail[index].untreated = 0
         },
-
         //清除会话未读状态
         CLEAR_UNREAD_STATUS: (state, index) => {
             console.log('>>>>>>>执行清除会话未读状态', index)
@@ -98,6 +98,10 @@ const Conversation = {
         UPDATE_INFORM_BTNSTATUS: (state, { index: index, btnStatus }) => {
             console.log('>>>>触发了按钮更新状态', index, btnStatus)
             state.informDetail[index].operationStatus = btnStatus
+        },
+        //更新会话列表
+        UPDATE_CONVERSATIONLIST: (state, payload) => {
+            state.conversationList = payload
         }
     },
     actions: {
@@ -269,7 +273,25 @@ const Conversation = {
             //memberPresence 群成员加入群组需要进行群组人数+1操作。
             // commit('UPDATE_GROUP_INFOS',{})
         },
-
+        //获取会话列表
+        getConversationlistFromLocal: async ({ dispatch, commit }) => {
+            try {
+                const result = await EaseChatClient.getLocalConversations()
+                console.log('>>>>>>>>从本地获取会话列表成功', result)
+                if (result.data.length) {
+                    commit('UPDATE_CONVERSATIONLIST', [...result.data])
+                } else {
+                    const result = await EaseChatClient.getServerConversations({
+                        pageSize: 50,
+                        cursor: ''
+                    })
+                    result?.data &&
+                        commit('UPDATE_CONVERSATIONLIST', [...result.data])
+                }
+            } catch (error) {
+                console.log('>>>>>>>>从本地获取会话列表失败', error)
+            }
+        },
         //收集会话依赖数据
         gatherConversation: ({ commit }, key) => {
             const corresMessage = _.cloneDeep(Message.state.messageList[key])

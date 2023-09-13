@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { useRouter, useRoute } from 'vue-router'
 /* 头像相关 */
 import informIcon from '@/assets/images/avatar/inform.png'
+import defaultAvatar from '@/assets/images/avatar/theme2x.png'
 /* route */
 const route = useRoute()
 /* router */
@@ -32,18 +33,18 @@ const joinedGroupList = computed(() => store.state.Contacts.groupList)
 
 //取会话数据
 const conversationList = computed(() => {
-    return store.state.Conversation.conversationListData
+    return store.state.Conversation.conversationList
 })
 
 //处理会话name
 const handleConversationName = computed(() => {
     return (item) => {
         if (item.conversationType === CHAT_TYPE.SINGLE) {
-            const friend = friendList.value[item.conversationKey]
-            return friend?.nickname || item.conversationInfo.name
+            const friend = friendList.value[item.conversationId]
+            return friend?.nickname || item.conversationId
         }
         if (item.conversationType === CHAT_TYPE.GROUP) {
-            const group = joinedGroupList.value[item.conversationKey]
+            const group = joinedGroupList.value[item.conversationId]
             if (group?.groupDetail) {
                 return group.groupDetail.name
             } else if (group?.groupname) {
@@ -59,17 +60,17 @@ const handleLastMsgNickName = computed(() => {
     const groupsInfos = store.state.Groups.groupsInfos
     return (conversation) => {
         const {
-            conversationKey: groupId,
+            conversationId: groupId,
             conversationType,
-            fromInfo
+            lastMessage
         } = conversation
-        const { fromId } = fromInfo || {}
+        const { from } = lastMessage || {}
         if (conversationType === CHAT_TYPE.GROUP) {
             const userInfoFromGroupNickname =
-                groupsInfos[groupId]?.groupMemberInfo?.[fromId]?.nickName
-            const friendUserInfoNickname = friendList[fromId]?.nickname
+                groupsInfos[groupId]?.groupMemberInfo?.[from]?.nickName
+            const friendUserInfoNickname = friendList[from]?.nickname
             return `${
-                userInfoFromGroupNickname || friendUserInfoNickname || fromId
+                userInfoFromGroupNickname || friendUserInfoNickname || from
             }：`
         }
     }
@@ -82,14 +83,14 @@ const networkStatus = computed(() => {
 const emit = defineEmits(['toInformDetails', 'toChatMessage'])
 //普通会话
 const checkedConverItemIndex = ref(null)
-const toChatMessage = (item, itemKey, index) => {
+const toChatMessage = (item, index) => {
+    const conversationId = item.conversationId
     checkedConverItemIndex.value = index
-    if (item && item.unreadMessageNum > 0)
-        store.commit('CLEAR_UNREAD_NUM', itemKey)
-    if (item.isMention) store.commit('CLEAR_AT_STATUS', itemKey)
+    if (item && item.unReadCount > 0)
+        store.commit('CLEAR_UNREAD_NUM', conversationId)
+    // if (item.isMention) store.commit('CLEAR_AT_STATUS', conversationId)
     //跳转至对应的消息界面
-
-    emit('toChatMessage', itemKey, item.conversationType)
+    emit('toChatMessage', conversationId, item.conversationType)
 }
 //删除某条会话
 const deleteConversation = (itemKey) => {
@@ -153,11 +154,11 @@ const deleteConversation = (itemKey) => {
             </div>
         </li>
         <!-- 普通会话 -->
-        <template v-if="Object.keys(conversationList).length > 0">
+        <template v-if="conversationList.length > 0">
             <li
-                v-for="(item, itemKey, index) in conversationList"
-                :key="itemKey"
-                @click="toChatMessage(item, itemKey, index)"
+                v-for="(item, index) in conversationList"
+                :key="item.conversationId"
+                @click="toChatMessage(item, index)"
                 :style="{
                     background:
                         checkedConverItemIndex === index ? '#E5E5E5' : ''
@@ -177,14 +178,12 @@ const deleteConversation = (itemKey) => {
                                     <el-avatar
                                         :size="34"
                                         :src="
-                                            friendList[item.conversationKey] &&
-                                            friendList[item.conversationKey]
-                                                .avatarurl
+                                            friendList[item.conversationId]
+                                                ?.avatarurl
                                                 ? friendList[
-                                                      item.conversationKey
+                                                      item.conversationId
                                                   ].avatarurl
-                                                : item.conversationInfo
-                                                      .avatarUrl
+                                                : defaultAvatar
                                         "
                                     >
                                     </el-avatar>
@@ -207,7 +206,7 @@ const deleteConversation = (itemKey) => {
                                         "
                                         >{{ handleLastMsgNickName(item) }}</span
                                     >
-                                    {{ item.latestMessage.msg }}
+                                    {{ item.lastMessage?.msg }}
                                 </div>
                             </div>
                             <div class="item_body item_right">
