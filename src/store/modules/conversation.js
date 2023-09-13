@@ -49,13 +49,13 @@ const Conversation = {
             state.informDetail = toBeUpdateInform
         },
         //更新已有会话
-        UPDATE_CONVERSATION_LIST: (state, payload) => {
-            console.log('>>>>>>>开始更新会话', payload)
-            const sortedData = sortConversation(
-                _.assign(_.cloneDeep(state.conversationListData), payload)
-            )
-            state.conversationListData = sortedData
-        },
+        // UPDATE_CONVERSATION_LIST: (state, payload) => {
+        //     console.log('>>>>>>>开始更新会话', payload)
+        //     const sortedData = sortConversation(
+        //         _.assign(_.cloneDeep(state.conversationListData), payload)
+        //     )
+        //     state.conversationListData = sortedData
+        // },
         //删除某条会话
         DELETE_ONE_CONVERSATION: (state, key) => {
             console.log('>>>>>>>执行删除会话操作', key)
@@ -99,9 +99,17 @@ const Conversation = {
             console.log('>>>>触发了按钮更新状态', index, btnStatus)
             state.informDetail[index].operationStatus = btnStatus
         },
-        //更新会话列表
-        UPDATE_CONVERSATIONLIST: (state, payload) => {
+        //获取会话列表
+        GET_CONVERSATION_LIST: (state, payload) => {
             state.conversationList = payload
+        },
+        //更新会话列表
+        UPDATE_CONVERSATION_LIST: (state, conversationItem) => {
+            const _index = state.conversationList.findIndex(
+                (c) => c.conversationId === conversationItem.conversationId
+            )
+            state.conversationList.splice(_index, 1)
+            state.conversationList.unshift(conversationItem)
         }
     },
     actions: {
@@ -279,24 +287,32 @@ const Conversation = {
                 const result = await EaseChatClient.getLocalConversations()
                 console.log('>>>>>>>>从本地获取会话列表成功', result)
                 if (result.data.length) {
-                    commit('UPDATE_CONVERSATIONLIST', [...result.data])
+                    commit('GET_CONVERSATION_LIST', [...result.data])
                 } else {
                     const result = await EaseChatClient.getServerConversations({
                         pageSize: 50,
                         cursor: ''
                     })
                     result?.data &&
-                        commit('UPDATE_CONVERSATIONLIST', [...result.data])
+                        commit('GET_CONVERSATION_LIST', [...result.data])
                 }
             } catch (error) {
                 console.log('>>>>>>>>从本地获取会话列表失败', error)
             }
         },
-        //收集会话依赖数据
-        gatherConversation: ({ commit }, key) => {
-            const corresMessage = _.cloneDeep(Message.state.messageList[key])
-            const res = createConversation(corresMessage)
-            commit('UPDATE_CONVERSATION_LIST', res)
+        //更新会话列表
+        updateLocalConversation: async ({ dispatch, commit }, params) => {
+            const { conversationId, chatType } = params
+            console.log('conversationId', conversationId, chatType)
+            try {
+                const result = await EaseChatClient.getLocalConversation({
+                    conversationId,
+                    conversationType: chatType
+                })
+                commit('UPDATE_CONVERSATION_LIST', { ...result.data })
+            } catch (error) {
+                console.log('>>>>>>>获取本地会话更新失败', error)
+            }
         }
     }
 }
