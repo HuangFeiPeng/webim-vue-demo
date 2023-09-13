@@ -1,5 +1,6 @@
 //引入环信SDK
-import EaseChatSDK from 'easemob-websdk'
+// import EaseChatSDK from 'easemob-websdk'
+import EaseChatSDK from '@/SDK/Easemob-chat'
 import {
     DEFAULT_EASEMOB_APPKEY,
     DEFAULT_EASEMOB_SOCKET_URL,
@@ -29,6 +30,7 @@ const EaseChatClient = new EaseChatSDK.connection({
         : DEFAULT_EASEMOB_SOCKET_URL,
     apiUrl: CUSTOM_CONFIG.restServer
         ? `${CUSTOM_CONFIG.restServer}:${CUSTOM_CONFIG.port}`
-        : DEFAULT_EASEMOB_REST_URL
+        : DEFAULT_EASEMOB_REST_URL,
+    enableLocalCache: true
 })
 export { EaseChatSDK, EaseChatClient }
