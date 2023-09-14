@@ -48,26 +48,21 @@ const Conversation = {
             toBeUpdateInform.unshift(informBody)
             state.informDetail = toBeUpdateInform
         },
-        //更新已有会话
-        // UPDATE_CONVERSATION_LIST: (state, payload) => {
-        //     console.log('>>>>>>>开始更新会话', payload)
-        //     const sortedData = sortConversation(
-        //         _.assign(_.cloneDeep(state.conversationListData), payload)
-        //     )
-        //     state.conversationListData = sortedData
-        // },
+        //更新会话列表
+        UPDATE_CONVERSATION_LIST: (state, conversationItem) => {
+            const _index = state.conversationList.findIndex(
+                (c) => c.conversationId === conversationItem.conversationId
+            )
+            state.conversationList.splice(_index, 1)
+            state.conversationList.unshift(conversationItem)
+        },
         //删除某条会话
         DELETE_ONE_CONVERSATION: (state, key) => {
             console.log('>>>>>>>执行删除会话操作', key)
-            const toUpdateConversation = _.assign(
-                {},
-                state.conversationListData
+            const _index = state.conversationList.findIndex(
+                (v) => v.conversationId === key
             )
-            if (toUpdateConversation[key]) {
-                delete toUpdateConversation[key]
-            }
-            console.log('删除后toUpdateConversation', toUpdateConversation)
-            state.conversationListData = _.assign({}, toUpdateConversation)
+            state.conversationList.splice(_index, 1)
         },
         //清除会话未读状态
         CLEAR_UNREAD_COUNT: (state, conversationId) => {
@@ -106,14 +101,6 @@ const Conversation = {
         //获取会话列表
         GET_CONVERSATION_LIST: (state, payload) => {
             state.conversationList = payload
-        },
-        //更新会话列表
-        UPDATE_CONVERSATION_LIST: (state, conversationItem) => {
-            const _index = state.conversationList.findIndex(
-                (c) => c.conversationId === conversationItem.conversationId
-            )
-            state.conversationList.splice(_index, 1)
-            state.conversationList.unshift(conversationItem)
         }
     },
     actions: {
@@ -342,6 +329,31 @@ const Conversation = {
                 commit('CLEAR_UNREAD_COUNT', conversationId)
             } catch (error) {
                 console.log('>>>>>未读数清空失败', error)
+            }
+        },
+        //删除会话
+        removeLocalConversation: async ({ dispatch, commit }, params) => {
+            const { conversationId, conversationType } = params
+            const options = {
+                // 会话 ID：单聊为对方的用户 ID，群聊为群组 ID。
+                channel: conversationId,
+                // 会话类型：（默认） `singleChat`：单聊；`groupChat`：群聊。
+                chatType: conversationType,
+                // 删除会话时是否同时删除服务端漫游消息。
+                deleteRoam: false
+            }
+            console.log('>>>>>>>删除会话', params)
+            try {
+                //会话列表删除时，需要先删除远端会话列表，再删除本地数据库，这样跨端获取会话列表才能同步。
+                await EaseChatClient.deleteConversation(options)
+                //删除本地数据库数据
+                await EaseChatClient.removeServerConversation({
+                    conversationId,
+                    conversationType
+                })
+                commit('DELETE_ONE_CONVERSATION', conversationId)
+            } catch (error) {
+                console.log('>>>>>会话列表删除失败', error)
             }
         }
     }
