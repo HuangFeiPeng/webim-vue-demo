@@ -69,9 +69,14 @@ const handleLastMsgNickName = computed(() => {
             const userInfoFromGroupNickname =
                 groupsInfos[groupId]?.groupMemberInfo?.[from]?.nickName
             const friendUserInfoNickname = friendList[from]?.nickname
-            return `${
-                userInfoFromGroupNickname || friendUserInfoNickname || from
-            }：`
+            console.log('>>>>>>>from', from)
+            if (!from || from === loginUserId.value) {
+                return '我：'
+            } else {
+                return `${
+                    userInfoFromGroupNickname || friendUserInfoNickname || from
+                }：`
+            }
         }
     }
 })
@@ -218,7 +223,7 @@ const deleteConversation = (conversationItem) => {
                                 <span class="time">{{
                                     dateFormater(
                                         'MM/DD/HH:mm',
-                                        item.latestSendTime
+                                        item.lastMessage.time
                                     )
                                 }}</span>
                                 <span
