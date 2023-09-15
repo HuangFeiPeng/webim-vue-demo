@@ -6,6 +6,7 @@ import createInform from './createInform'
 import createMessage from './createMessage'
 import sortPinyinFriendItem from './sortPinyinFriendItem'
 import handlePresence from './handlePresence'
+import checkLastMsgisHasMention from './checkLastMsgisHasMention'
 export {
     handleSDKErrorNotifi,
     createConversation,
@@ -15,4 +16,5 @@ export {
     createMessage,
     sortPinyinFriendItem,
     handlePresence,
+    checkLastMsgisHasMention
 }
