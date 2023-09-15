@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { useRouter, useRoute } from 'vue-router'
 /* 头像相关 */
 import informIcon from '@/assets/images/avatar/inform.png'
+import groupAvatarImage from '@/assets/images/avatar/jiaqun2x.png'
 import defaultAvatar from '@/assets/images/avatar/theme2x.png'
 /* route */
 const route = useRoute()
@@ -186,6 +187,16 @@ const deleteConversation = (conversationItem) => {
                             <div class="item_body item_left">
                                 <div class="session_other_avatar">
                                     <el-avatar
+                                        v-if="
+                                            item.conversationType ===
+                                            CHAT_TYPE.GROUP
+                                        "
+                                        :src="groupAvatarImage"
+                                        :size="34"
+                                    >
+                                    </el-avatar>
+                                    <el-avatar
+                                        v-else
                                         :size="34"
                                         :src="
                                             friendList[item.conversationId]
