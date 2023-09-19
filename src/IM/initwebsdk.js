@@ -35,7 +35,7 @@ const initEasemChatClient = (options) => {
 }
 
 initEasemChatClient()
-if (Array.from(EM_CONNECTION_CUSTOM_CONFIG.value)) {
+if (Array.from(Object.keys(EM_CONNECTION_CUSTOM_CONFIG.value)).length) {
     initEasemChatClient(EM_CONNECTION_CUSTOM_CONFIG.value)
 }
 export { EaseChatSDK, EaseChatClient, initEasemChatClient }
