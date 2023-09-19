@@ -97,6 +97,8 @@ const handleLastMsgContent = computed(() => {
                     (resultContent = CUSTOM_TYPE[msgBody.customEvent])) ||
                     ''
             }
+        } else if (msgBody?.isRecall) {
+            return (resultContent = '撤回了一条消息')
         } else {
             resultContent = msg
         }
@@ -251,14 +253,17 @@ const deleteConversation = (conversationItem) => {
                                         >{{ handleLastMsgNickName(item) }}</span
                                     >
 
-                                    {{ handleLastMsgContent(item.lastMessage) }}
+                                    {{
+                                        item.lastMessage &&
+                                        handleLastMsgContent(item.lastMessage)
+                                    }}
                                 </div>
                             </div>
                             <div class="item_body item_right">
                                 <span class="time">{{
                                     dateFormater(
                                         'MM/DD/HH:mm',
-                                        item.lastMessage.time
+                                        item?.lastMessage?.time
                                     )
                                 }}</span>
                                 <span
