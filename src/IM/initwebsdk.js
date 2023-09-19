@@ -25,7 +25,7 @@ const initEasemChatClient = (options) => {
         Array.from(Object.keys(options)).length
     ) {
         EaseChatClient = new EaseChatSDK.connection(
-            _.assign(DEFAULT_EASEMOB_CONNECTIONS_OPTIONS, ...options)
+            _.assign(DEFAULT_EASEMOB_CONNECTIONS_OPTIONS, { ...options })
         )
     } else {
         EaseChatClient = new EaseChatSDK.connection(

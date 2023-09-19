@@ -3,6 +3,12 @@ import store from '@/store'
 import { handleSDKErrorNotifi } from '@/utils/handleSomeData'
 import { EaseChatClient } from '../initwebsdk'
 import { usePlayRing } from '@/hooks'
+import { useLocalStorage } from '@vueuse/core'
+import { CNNECTION_CUSTOM_CONFIG_KEY } from '../config'
+const EM_CONNECTION_CUSTOM_CONFIG = useLocalStorage(
+    CNNECTION_CUSTOM_CONFIG_KEY,
+    {}
+)
 export const imConnectListener = () => {
     const mountConnectEventListener = () => {
         const { isOpenPlayRing, clickRing } = usePlayRing()
@@ -38,8 +44,13 @@ export const imConnectListener = () => {
         fetchTheLoginUserBlickList()
         fetchGroupList()
         //初始化vuex中的会话列表相关数据
-        store.commit('INIT_CONVERSATION_STATE')
-        store.dispatch('getConversationlistFromLocal')
+        //通过读取本地实例化SDK是否开启本地缓存配置，从而区别获取会话列表数据。
+        if (EM_CONNECTION_CUSTOM_CONFIG.value?.enableLocalCache) {
+            store.dispatch('getConversationlistFromLocal')
+        } else {
+            console.log('>>>>>>请求服务端会话列表')
+            store.dispatch('getConversationlistFromServer')
+        }
     }
     //获取登陆用户属性
     const getMyUserInfos = () => {

@@ -1,9 +1,28 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
 import { usePlayRing, useSetEMLogConfig } from '@/hooks'
+import { CNNECTION_CUSTOM_CONFIG_KEY } from '@/IM/config'
 const dialogVisible = ref(false)
 const { isOpenPlayRing } = usePlayRing()
 const { isOpenedEMLog, donwLoadEMLog } = useSetEMLogConfig()
+const EM_CONNECTION_CUSTOM_CONFIG = useLocalStorage(
+    CNNECTION_CUSTOM_CONFIG_KEY,
+    {}
+)
+const isEnableLocalCache = ref(false)
+const isEnableLocalCacheLoading = ref(false)
+watchEffect(() => {
+    isEnableLocalCache.value = EM_CONNECTION_CUSTOM_CONFIG.value
+        ?.enableLocalCache
+        ? true
+        : false
+})
+const handleSwitchEnableLocalCache = (value) => {
+    isEnableLocalCacheLoading.value = true
+    EM_CONNECTION_CUSTOM_CONFIG.value.enableLocalCache = value
+    window.location.reload()
+}
 defineExpose({
     dialogVisible
 })
@@ -33,6 +52,24 @@ defineExpose({
                     v-model="isOpenPlayRing"
                     active-text="开启"
                     inactive-text="关闭"
+                />
+            </div>
+            <div class="setting_main_item">
+                <el-tooltip
+                    class="item"
+                    effect="dark"
+                    content="开启后会话列表将会从DB中获取"
+                    placement="top"
+                >
+                    <span>会话本地存储</span>
+                </el-tooltip>
+
+                <el-switch
+                    v-model="isEnableLocalCache"
+                    :loading="isEnableLocalCacheLoading"
+                    active-text="开启"
+                    inactive-text="关闭"
+                    @change="handleSwitchEnableLocalCache"
                 />
             </div>
             <div class="setting_main_item">

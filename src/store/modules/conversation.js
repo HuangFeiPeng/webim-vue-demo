@@ -1,10 +1,20 @@
 import _ from 'lodash'
 import { useLocalStorage } from '@vueuse/core'
-import { createInform, checkLastMsgisHasMention } from '@/utils/handleSomeData'
+import {
+    createInform,
+    checkLastMsgisHasMention,
+    getUpdateConversation
+} from '@/utils/handleSomeData'
 import { EaseChatClient, EaseChatSDK } from '@/IM/initwebsdk'
 import { informType, messageType } from '@/constant'
+import { CNNECTION_CUSTOM_CONFIG_KEY } from '@/IM/config'
 const { INFORM_FROM } = informType
 const { CHAT_TYPE } = messageType
+const EM_CONNECTION_CUSTOM_CONFIG = useLocalStorage(
+    CNNECTION_CUSTOM_CONFIG_KEY,
+    {}
+)
+const isEnableLocalCache = EM_CONNECTION_CUSTOM_CONFIG.value?.enableLocalCache
 const Conversation = {
     state: {
         informDetail: [],
@@ -18,10 +28,6 @@ const Conversation = {
             state.informDetail = useLocalStorage(
                 `EASEIM_${storageId}_INFORM`,
                 []
-            )
-            state.conversationListData = useLocalStorage(
-                `EASEIM_${storageId}_conversationList`,
-                {}
             )
         },
         //清空系统通知
@@ -48,7 +54,10 @@ const Conversation = {
             const _index = state.conversationList.findIndex(
                 (c) => c.conversationId === conversationItem.conversationId
             )
-            state.conversationList.splice(_index, 1)
+            if (_index !== -1) {
+                state.conversationList.splice(_index, 1)
+            }
+
             state.conversationList.unshift(conversationItem)
         },
         //删除某条会话
@@ -91,16 +100,6 @@ const Conversation = {
         CLEAR_UNTREATED_STATUS: (state, index) => {
             console.log('>>>>>执行清除卡片未读', index)
             state.informDetail[index].untreated = 0
-        },
-        //清除会话未读状态
-        CLEAR_UNREAD_STATUS: (state, index) => {
-            console.log('>>>>>>>执行清除会话未读状态', index)
-            state.conversationListData[index].unreadMessageNum = 0
-        },
-        //更新会话未读状态
-        UPDATE_UNREAD_STATUS: (state, index) => {
-            console.log('>>>>>>>执行更新会话未读状态', index)
-            state.conversationListData[index].unreadMessageNum++
         },
         //更新会话@状态
         //更改卡片消息的按钮状态
@@ -282,7 +281,7 @@ const Conversation = {
             //memberPresence 群成员加入群组需要进行群组人数+1操作。
             // commit('UPDATE_GROUP_INFOS',{})
         },
-        //获取会话列表
+        //获取会话列表[从本地数据库获取]
         getConversationlistFromLocal: async ({ dispatch, commit }) => {
             try {
                 const result = await EaseChatClient.getLocalConversations()
@@ -290,30 +289,40 @@ const Conversation = {
                 if (result.data.length) {
                     commit('GET_CONVERSATION_LIST', [...result.data])
                 } else {
-                    const result = await EaseChatClient.getServerConversations({
-                        pageSize: 50,
-                        cursor: ''
-                    })
-                    result?.data &&
-                        commit('GET_CONVERSATION_LIST', [...result.data])
+                    dispatch('getConversationlistFromServer')
                 }
             } catch (error) {
                 console.log('>>>>>>>>从本地获取会话列表失败', error)
             }
         },
-        //更新会话列表
+        //获取会话列表[从会话列表获取]
+        getConversationlistFromServer: async ({ dispatch, commit }) => {
+            try {
+                const result = await EaseChatClient.getServerConversations({
+                    pageSize: 50,
+                    cursor: ''
+                })
+                console.log('>>>>>result', result.data.conversations)
+                result?.data &&
+                    commit('GET_CONVERSATION_LIST', [
+                        ...result.data.conversations
+                    ])
+            } catch (error) {
+                console.log('>>>>>服务端获取会话列表失败', error)
+            }
+        },
+        /**
+         * @name updateLocalConversation(更新本地会话列表)
+         * @description 该方法为更新会话列表，默认该方法会用来更新通过服务端拉取到本地的会话列表，true则调用更新数据库会话列表方法。
+         */
         updateLocalConversation: async ({ dispatch, commit }, params) => {
             const { conversationId, chatType } = params
-            console.log('conversationId', conversationId, chatType)
-            try {
-                const result = await EaseChatClient.getLocalConversation({
+            //isEnableLocalCache 判断是否开启了数据库缓存
+            if (!isEnableLocalCache) {
+                let toBeUpdateConversationItem = getUpdateConversation(
                     conversationId,
-                    conversationType: chatType
-                })
-                let toBeUpdateConversationItem = { ...result?.data }
-                console.log('>>>>>>>更新完成', result.data)
-                //检查更新的lastmsg中是否包含提及
-
+                    chatType
+                )
                 const isMention = toBeUpdateConversationItem?.customField
                     ?.mention
                     ? true
@@ -324,16 +333,41 @@ const Conversation = {
                     ...toBeUpdateConversationItem.customField,
                     mention: isMention
                 }) || { mention: isMention }
-                //设置会话级别提及状态clear
-                await dispatch('setLocalConversationCustomAttributes', {
-                    conversationId,
-                    conversationType: chatType,
-                    customField: customField
-                })
                 toBeUpdateConversationItem.customField = { ...customField }
                 commit('UPDATE_CONVERSATION_LIST', toBeUpdateConversationItem)
-            } catch (error) {
-                console.log('>>>>>>>获取本地会话更新失败', error)
+            } else {
+                try {
+                    const result = await EaseChatClient.getLocalConversation({
+                        conversationId,
+                        conversationType: chatType
+                    })
+                    let toBeUpdateConversationItem = { ...result?.data }
+                    //检查更新的lastmsg中是否包含提及
+                    const isMention = toBeUpdateConversationItem?.customField
+                        ?.mention
+                        ? true
+                        : checkLastMsgisHasMention(
+                              toBeUpdateConversationItem.lastMessage
+                          )
+                    const customField =
+                        (toBeUpdateConversationItem.customField && {
+                            ...toBeUpdateConversationItem.customField,
+                            mention: isMention
+                        }) || { mention: isMention }
+                    //设置会话级别提及状态clear
+                    await dispatch('setLocalConversationCustomAttributes', {
+                        conversationId,
+                        conversationType: chatType,
+                        customField: customField
+                    })
+                    toBeUpdateConversationItem.customField = { ...customField }
+                    commit(
+                        'UPDATE_CONVERSATION_LIST',
+                        toBeUpdateConversationItem
+                    )
+                } catch (error) {
+                    console.log('>>>>>>>获取本地会话更新失败', error)
+                }
             }
         },
         //设置会话自定义属性
@@ -366,11 +400,13 @@ const Conversation = {
                 const msg = EaseChatSDK.message.create(option)
                 const res = await EaseChatClient.send(msg)
                 console.log('>>>>>>channel ack send success', res)
-                //同步清空本地数据库未读数。
-                await EaseChatClient.clearConversationUnreadCount({
-                    conversationId,
-                    conversationType: chatType
-                })
+                if (isEnableLocalCache) {
+                    //同步清空本地数据库未读数。
+                    await EaseChatClient.clearConversationUnreadCount({
+                        conversationId,
+                        conversationType: chatType
+                    })
+                }
                 //通知更新缓存中的会话未读数。
                 commit('CLEAR_UNREAD_COUNT', conversationId)
             } catch (error) {
@@ -392,11 +428,13 @@ const Conversation = {
             try {
                 //会话列表删除时，需要先删除远端会话列表，再删除本地数据库，这样跨端获取会话列表才能同步。
                 await EaseChatClient.deleteConversation(options)
-                //删除本地数据库数据
-                await EaseChatClient.removeServerConversation({
-                    conversationId,
-                    conversationType
-                })
+                if (isEnableLocalCache) {
+                    //删除本地数据库数据
+                    await EaseChatClient.removeLocalConversation({
+                        conversationId,
+                        conversationType
+                    })
+                }
                 commit('DELETE_ONE_CONVERSATION', conversationId)
             } catch (error) {
                 console.log('>>>>>会话列表删除失败', error)
