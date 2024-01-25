@@ -23,9 +23,9 @@
         "pinyin-pro": "^3.13.0",
         "postcss": "^8.4.20",
         "postcss-pxtorem": "^6.0.0",
-        "vant": "^4.0.4",
+        "vant": "^4.8.3",
         "vue": "^3.2.47",
-        "vue-i18n": "^9.2.2",
+        "vue-i18n": "^9.9.0",
         "vue-router": "^4.0.3"
     },
     "devDependencies": {
