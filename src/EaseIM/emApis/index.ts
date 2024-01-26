@@ -1,2 +1,1 @@
-import { emConnect } from './emConnect'
-export { emConnect }
+export * from './emConnect'

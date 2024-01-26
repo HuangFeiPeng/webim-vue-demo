@@ -53,7 +53,10 @@ import { showToast } from 'vant'
 import { useI18n } from 'vue-i18n'
 /* 登录逻辑 */
 defineOptions({
-    name: 'Login',
+    name: 'HelloWorld',
+    mounted: function () {
+        console.log('>>>>>HelloWorld mounted')
+    },
 })
 const loginParams = reactive({
     phoneNumber: '',
