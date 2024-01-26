@@ -52,6 +52,9 @@ import loginLogo from '@/assets/images/login/loginIcon.png'
 import { showToast } from 'vant'
 import { useI18n } from 'vue-i18n'
 /* 登录逻辑 */
+defineOptions({
+    name: 'Login',
+})
 const loginParams = reactive({
     phoneNumber: '',
     username: 'hfp',
