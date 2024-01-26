@@ -9,4 +9,5 @@ export default {
         code: '请输入验证码',
     },
     loginBtn: '登录',
+    loginFailed: '登录失败',
 }

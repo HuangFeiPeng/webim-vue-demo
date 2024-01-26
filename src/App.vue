@@ -5,8 +5,8 @@
 /* eruda */
 import eruda from 'eruda'
 import { useLocale } from '@/i18n/use-locale'
-import { useEMConnectListener } from '@/EaseIM/hooks'
-useEMConnectListener()
+import { emConnectListener } from '@/EaseIM/emListener'
+emConnectListener()
 useLocale()
 eruda.init()
 </script>

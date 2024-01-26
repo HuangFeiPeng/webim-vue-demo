@@ -9,4 +9,5 @@ export default {
         code: 'please input code',
     },
     loginBtn: 'Enter',
+    loginFailed: 'Login failed',
 }

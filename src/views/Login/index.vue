@@ -45,11 +45,12 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { useEMLogin } from '@/EaseIM/hooks'
-import { EChatClient } from '@/EaseIM'
+import { EMClient } from '@/EaseIM'
+import { emConnect } from '@/EaseIM/emApis'
 /* images */
 import loginLogo from '@/assets/images/login/loginIcon.png'
-
+import { showToast } from 'vant'
+import { useI18n } from 'vue-i18n'
 /* 登录逻辑 */
 const loginParams = reactive({
     phoneNumber: '',
@@ -58,13 +59,23 @@ const loginParams = reactive({
     smsCode: '',
 })
 const isAgree = ref(false)
-const { EMlogin } = useEMLogin()
-const loginEaseIM: () => void = () => {
-    EMlogin({ imId: loginParams.username, imPwd: loginParams.password, isCacheToken: true })
-    console.log('>>>>登录环信')
+const { EMLoginWithPassword } = emConnect()
+const { t } = useI18n()
+const loginEaseIM = async () => {
+    const username: string = loginParams.username
+    const password: string = loginParams.password
+    try {
+        await EMLoginWithPassword(username, password)
+    } catch (error) {
+        showToast({
+            message: `${t('login.loginFailed')}`,
+            duration: 2000,
+        })
+        console.log(error)
+    }
 }
 /* EaseIM version */
-const EaseIMVersion = EChatClient.version
+const EaseIMVersion = EMClient.version
 </script>
 <style lang="scss" scoped>
 @import './index.scss';

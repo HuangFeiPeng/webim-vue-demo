@@ -24,7 +24,7 @@
 import { computed, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import type { RouteRecordName, RouteLocationNormalizedLoaded } from 'vue-router'
-import { useEMMessagesListener, useContactsListener } from '@/EaseIM/hooks'
+import { emConnectListener } from '@/EaseIM/emListener'
 import { useRouterKeepAliveStore, useConversationStore, useSystemNotfiStore } from '@/stores'
 import _ from 'lodash'
 import { useI18n } from 'vue-i18n'
@@ -95,6 +95,4 @@ const isShowTabBar = computed(() => {
 const Instance = getCurrentInstance()
 console.log('>>>>Instance', Instance)
 /* EaseIM Listener */
-useEMMessagesListener()
-useContactsListener()
 </script>
