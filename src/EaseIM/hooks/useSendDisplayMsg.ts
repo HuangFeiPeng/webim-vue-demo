@@ -27,7 +27,7 @@ export const useSendDisplayMsg = () => {
                         resolve(res)
                         msgSendStatus.value = 'succeed'
                         console.log('>>>>>发送成功', msg)
-                        conversationStore.updateConversation(msg)
+                        // conversationStore.updateConversation(msg)
                         messagesStore.updateMessagesList('NEW_MSG', msg)
                     })
                     .catch((err) => {

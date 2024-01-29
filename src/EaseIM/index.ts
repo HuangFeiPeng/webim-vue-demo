@@ -1,13 +1,13 @@
 import EChatSDK, { EasemobChat } from 'easemob-websdk'
 import miniCore, { MiniCore } from 'easemob-websdk/miniCore/miniCore'
-import contactPlugin from 'easemob-websdk/contact/contact'
-import groupPlugin from 'easemob-websdk/group/group'
+import * as contactPlugin from 'easemob-websdk/contact/contact'
+import * as groupPlugin from 'easemob-websdk/group/group'
 import { EM_APP_KEY, EM_USE_OWN_URL } from './config'
 const EChatClient = new EChatSDK.connection({
     appKey: EM_APP_KEY,
     useOwnUploadFun: EM_USE_OWN_URL,
 })
-
+console.log('contactPlugin', contactPlugin)
 let EMClient = {} as MiniCore
 EMClient = new miniCore({
     appKey: EM_APP_KEY,

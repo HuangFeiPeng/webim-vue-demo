@@ -1,13 +1,15 @@
-import { EaseIMChatType } from '@/constants/im'
+import type { ServerConversations, ConversationItem } from 'easemob-websdk/types/indexApi'
+import type {
+    MessageBody,
+    DeliveryMsgBody,
+    ReadMsgBody,
+    ChannelMsgBody,
+    CmdMsgBody,
+} from 'easemob-websdk/types/message'
 export type ConversationChatType = 'singleChat' | 'groupChat'
-export interface ConversationBody {
-    id: string
-    unReadNum: number
-    msgFrom: string | undefined
-    msgTo: string
-    chatType: ConversationChatType
-    lastMessage: any
-    time: string | number
-    isStick?: boolean
+export type LastMessageBody = Exclude<MessageBody, DeliveryMsgBody | ReadMsgBody | ChannelMsgBody | CmdMsgBody>
+export interface ConversationListItem extends ConversationItem {
+    /** The last message in the conversation. */
+    /** 最近的一条消息。*/
+    lastMessage: LastMessageBody
 }
-export type HandleStickType = 'STICK' | 'UNSTICK'

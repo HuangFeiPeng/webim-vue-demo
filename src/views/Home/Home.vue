@@ -79,7 +79,7 @@ const systemNotfiStore = useSystemNotfiStore()
 const fullUnReadNum = computed(() => {
     let sum = 0
     if (converationStore.getConversationListvalues.length) {
-        converationStore.getConversationListvalues.forEach((item) => (sum += item.unReadNum))
+        converationStore.getConversationListvalues.forEach((item) => (sum += item.unReadCount))
     }
     if (systemNotfiStore.unReadNotifCount > 0) {
         sum += systemNotfiStore.unReadNotifCount

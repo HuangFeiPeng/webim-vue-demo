@@ -3,8 +3,9 @@
         <!-- 搜索组件 -->
         <SearchInput />
         <van-list
-            v-model:loading="loading"
-            :finished="finished"
+            v-model:loading="conversationLoading"
+            v-model:error="conversationError"
+            :finished="conversationFinished"
             :finished-text="$t('conversations.nomore')"
             @load="onLoadConversations"
         >
@@ -28,41 +29,45 @@
                 </div>
             </div>
             <!-- 普通会话 -->
-            <van-swipe-cell v-for="item in conversationList" :key="item.id">
-                <div class="van-haptics-feedback conversation_item_box" @click="enterTheChatPage(item)">
+            <van-swipe-cell v-for="conversationItem in conversationList" :key="conversationItem.conversationId">
+                <div class="van-haptics-feedback conversation_item_box" @click="enterTheChatPage(conversationItem)">
                     <div class="avatar_box">
-                        <van-badge :content="item.unReadNum" max="99" :show-zero="false">
-                            <img class="avatar_box_img" :src="mapConversationsInfo(item)?.avatarUrl" alt="" />
+                        <van-badge :content="conversationItem.unReadCount" max="99" :show-zero="false">
+                            <img
+                                class="avatar_box_img"
+                                :src="mapConversationsInfo(conversationItem)?.avatarUrl"
+                                alt=""
+                            />
                         </van-badge>
                     </div>
                     <div class="chat_infor_main van-hairline--bottom">
                         <div class="content">
-                            <p class="name">{{ mapConversationsInfo(item)?.name }}</p>
+                            <p class="name">{{ mapConversationsInfo(conversationItem)?.name }}</p>
                             <p class="last_msg">
-                                {{ handleLastMsgPreview(item) }}
+                                {{ handleLastMsgPreview(conversationItem) }}
                             </p>
                         </div>
-                        <div class="time">{{ handleLastMsgTime(item.time) }}</div>
+                        <div class="time">{{ handleLastMsgTime(conversationItem.lastMessage.time) }}</div>
                     </div>
                 </div>
                 <template #right>
                     <div class="conversation_swipe_right">
                         <van-button
                             square
-                            :type="item.isStick ? 'primary' : 'warning'"
+                            :type="conversationItem.isPinned ? 'primary' : 'warning'"
                             :text="
-                                item.isStick
+                                conversationItem.isPinned
                                     ? $t('conversations.swipeCellBtn.unstick')
                                     : $t('conversations.swipeCellBtn.stick')
                             "
-                            @click="stickTheChat(item.id, item.isStick)"
+                            @click="stickTheChat(conversationItem.conversationId, conversationItem.isPinned)"
                         />
 
                         <van-button
                             square
                             type="danger"
                             :text="$t('conversations.swipeCellBtn.delete')"
-                            @click="deleteTheChat(item.id, item.chatType)"
+                            @click="deleteTheChat(conversationItem.conversationId)"
                         />
                     </div>
                 </template>
@@ -72,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, unref, toRaw } from 'vue'
+import { ref, computed, unref, toRaw, onMounted } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 /* pinia */
@@ -84,8 +89,9 @@ import { EChatClient } from '@/EaseIM'
 import { LAST_MSG_PREVIEW } from '@/constants/im'
 import { useFetchConversation } from '@/EaseIM/hooks'
 import SearchInput from '@/components/SearchInput/index.vue'
-import { ConversationBody, ConversationChatType } from '@/EaseIM/types/conversations'
+import { ConversationListItem } from '@/EaseIM/types/'
 import { SystemNotfiParams } from '@/EaseIM/types'
+import { emConversation } from '@/EaseIM/emApis'
 /* image */
 import emptyIcon from '@/assets/images/conversation/emptyicon@2x.png'
 import informAvatar from '@/assets/images/conversation/informAvatar.png'
@@ -97,46 +103,42 @@ Dayjs.extend(relativeTime)
 /* 会话列表逻辑相关 */
 const conversationStore = useConversationStore()
 const conversationList = computed(() => {
-    let reorderConversations: ConversationBody[] = []
-    conversationStore.getConversationListvalues.forEach((item) => {
-        if (item.isStick) {
-            reorderConversations.unshift(item)
-        } else {
-            reorderConversations.push(item)
-        }
-    })
-    return reorderConversations
+    return conversationStore.getConversationListvalues
 })
 //下拉加载更多数据
-const loading = ref(false)
-const finished = ref(false)
+const conversationLoading = ref(false)
+const conversationError = ref(false)
+const conversationFinished = ref(false)
 const pageNum = ref(1)
 const pageSize = ref(20)
-const { fetchConversionList } = useFetchConversation()
+const { fetchConversationFromServer } = emConversation()
 const onLoadConversations = async () => {
     console.log('onLoadConversations')
-    let res = await fetchConversionList({ pageNum: pageNum.value, pageSize: pageSize.value })
-    loading.value = false
-    pageNum.value = pageNum.value + 1
-    if (!res.length) {
-        finished.value = true
-        return
+    try {
+        const res = await fetchConversationFromServer(pageSize.value, '')
+        conversationLoading.value = false
+        pageNum.value = pageNum.value + 1
+        if (res?.conversations?.length) {
+            conversationFinished.value = true
+        }
+    } catch (error) {
+        console.log(error)
+        conversationError.value = true
     }
-    console.log(res, pageNum.value)
 }
 
 //处理置顶会话
-const stickTheChat = (targetId: string, isStick: boolean | undefined) => {
+const stickTheChat = (targetId: string, isStick?: boolean) => {
     if (isStick) {
-        conversationStore.handleStickList('UNSTICK', targetId)
+        conversationStore.handleStickList(targetId)
     } else {
-        conversationStore.handleStickList('STICK', targetId)
+        conversationStore.handleStickList(targetId)
     }
 }
 //删除会话
-const deleteTheChat = (targetId: string, chatType: ConversationChatType) => {
+const deleteTheChat = (targetId: string) => {
     console.log('>>>>>>调用删除会话操作')
-    conversationStore.deleteConversation(targetId, chatType)
+    conversationStore.deleteConversation(targetId)
 }
 /* 映射会话对应的属性 */
 const defaultAvatarUrl = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
@@ -145,20 +147,21 @@ const groupsStore = useGroupsStore()
 const mapConversationsInfo = computed(() => {
     const contacts = contactsStore.contacts
     const groups = groupsStore.groups
-    return (item: ConversationBody) => {
-        if (item.chatType === 'singleChat') {
+    return (conversationItem: ConversationListItem) => {
+        const { conversationId, conversationType } = conversationItem
+        if (conversationType === 'singleChat') {
             return {
-                name: contacts[item.id]?.nickname || item.id,
-                avatarUrl: contacts[item.id]?.avatarurl || defaultAvatarUrl,
+                name: contacts[conversationId]?.nickname || conversationId,
+                avatarUrl: contacts[conversationId]?.avatarurl || defaultAvatarUrl,
             }
         }
-        if (item.chatType === 'groupChat') {
+        if (conversationType === 'groupChat') {
             return {
                 name:
-                    groups[item.id]?.groupInfo?.name ||
-                    groups[item.id]?.groupInfo?.groupName ||
-                    groups[item.id]?.groupid ||
-                    item.id,
+                    groups[conversationId]?.groupInfo?.name ||
+                    groups[conversationId]?.groupInfo?.groupName ||
+                    groups[conversationId]?.groupid ||
+                    conversationId,
                 avatarUrl: defaultAvatarUrl,
             }
         }
@@ -167,13 +170,15 @@ const mapConversationsInfo = computed(() => {
 
 /* 处理最后一条消息展示 */
 const handleLastMsgPreview = computed(() => {
-    return (item: ConversationBody) => {
-        if (LAST_MSG_PREVIEW[item.lastMessage.type]) {
-            return LAST_MSG_PREVIEW[item.lastMessage.type]
-        } else if (item.lastMessage.type === 'custom') {
+    return (conversationItem: ConversationListItem) => {
+        const { lastMessage } = conversationItem
+        if (!lastMessage) return ''
+        if (LAST_MSG_PREVIEW[lastMessage.type]) {
+            return LAST_MSG_PREVIEW[lastMessage.type]
+        } else if (lastMessage.type === 'custom') {
             return '[自定义类型消息]'
-        } else {
-            return item.lastMessage.msg
+        } else if (lastMessage.type === 'txt') {
+            return lastMessage?.msg
         }
     }
 })
@@ -224,15 +229,15 @@ const enterTheSystemNotfiPage = () => {
 }
 
 //跳转至聊天页
-const enterTheChatPage = (chatParams: ConversationBody) => {
+const enterTheChatPage = (chatParams: ConversationListItem) => {
     console.log('>>>>>>chatParams', chatParams)
-    const { id, chatType, unReadNum } = chatParams
-    const targetId = id
+    const { conversationId, conversationType, unReadCount } = chatParams
+    const targetId = conversationId
     //如果该会话未读数大于0则发送已读会话，并会清除服务端记录的该会话未读数。
-    if (unReadNum > 0) {
-        conversationStore.readedConversation(targetId, chatType)
+    if (unReadCount > 0) {
+        // conversationStore.readedConversation(targetId, chatType)
     }
-    router.push({ name: 'chat', query: { id, chatType } })
+    router.push({ name: 'chat', query: { conversationId, conversationType } })
 }
 </script>
 <style lang="scss" scoped>
