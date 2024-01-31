@@ -1,47 +1,32 @@
 import { defineStore } from 'pinia'
-import { EChatClient, EasemobChat } from '@/EaseIM'
+import { UpdateOwnUserInfoParams } from 'easemob-websdk/types/indexApi'
 import _ from 'lodash'
 interface State {
     isLogined: boolean
-    loginHxId: string
-    loginUserProfile: {
-        [key: string]: EasemobChat.UpdateOwnUserInfoParams
-    }
+    loginEMId: string
+    loginUserProfile: UpdateOwnUserInfoParams
 }
 interface InitLoginParams {
-    loginHxId: string
-}
-interface GetLoginInfos extends EasemobChat.UpdateOwnUserInfoParams {
-    loginHxId: string
+    loginEMId: string
 }
 export const useLoginStore = defineStore('loginStore', {
     state: (): State => {
         return {
             isLogined: false,
-            loginHxId: '',
+            loginEMId: '',
             loginUserProfile: {},
         }
     },
     getters: {
         getLoginInfos: (state) => {
-            const result: GetLoginInfos = { loginHxId: state.loginHxId, ...state.loginUserProfile }
-            return result
+            return { loginEMId: state.loginEMId, ...state.loginUserProfile }
         },
     },
     actions: {
         initLoginState(params: InitLoginParams) {
-            const { loginHxId } = params
-            this.$state.loginHxId = loginHxId
+            const { loginEMId } = params
+            this.$state.loginEMId = loginEMId
             this.$state.isLogined = true
-        },
-        async fetchLoginUserProfile() {
-            try {
-                const loginHxId = this.$state.loginHxId
-                const res = await EChatClient.fetchUserInfoById(loginHxId)
-                if (res?.data) {
-                    _.merge(this.$state.loginUserProfile, res.data[loginHxId])
-                }
-            } catch (error) {}
         },
     },
 })

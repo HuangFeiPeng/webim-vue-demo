@@ -1,13 +1,5 @@
 import { defineStore } from 'pinia'
 import type { ServerConversations, ConversationItem } from 'easemob-websdk/types/indexApi'
-import type {
-    MessageBody,
-    DeliveryMsgBody,
-    ReadMsgBody,
-    ChannelMsgBody,
-    CmdMsgBody,
-} from 'easemob-websdk/types/message'
-import { getEMKey } from '@/utils'
 import { ConversationListItem } from '@/EaseIM/types/'
 import _ from 'lodash'
 import { useLocalStorage } from '@vueuse/core'

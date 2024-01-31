@@ -13,9 +13,8 @@ export const useEMConnectListener = () => {
     const initLoginNeedData = async () => {
         const loginHxId = EChatClient.user
         loginStore.isLogined = false
-        loginStore.initLoginState({ loginHxId })
-        loginStore.fetchLoginUserProfile()
-        contactsStore.fetchContactsData(true)
+        loginStore.initLoginState({ loginEMId: loginHxId })
+        // contactsStore.fetchContactsData(true)
         groupsStore.fetchJoinedGroups()
         systemNotfiStore.initSystemNotfiList()
     }

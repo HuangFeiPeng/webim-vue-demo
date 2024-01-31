@@ -1,7 +1,8 @@
 import { EMClient } from '../index'
+import _ from 'lodash'
 import { useRouter } from 'vue-router'
 import { LISTENNER_EVENT_NAME } from '../types'
-import { emConversation } from '../emApis'
+import { emUserInofs, emContacts } from '../emApis'
 import { useLoginStore, useContactsStore, useGroupsStore, useSystemNotfiStore } from '@/stores'
 export const emConnectListener = () => {
     console.log('%cEaseIM connect mounted', 'color:blue;')
@@ -10,8 +11,12 @@ export const emConnectListener = () => {
     const contactsStore = useContactsStore()
     const groupsStore = useGroupsStore()
     const systemNotfiStore = useSystemNotfiStore()
-    const fetchLoginNeedEMData = () => {
-        console.log(112)
+    const { fetchUserInfoWithLoginId, fetchOtherInfoFromServer } = emUserInofs()
+    const { fetchContactsListFromServer } = emContacts()
+    const fetchLoginNeedEMData = async () => {
+        await fetchUserInfoWithLoginId()
+        const contactsRes = await fetchContactsListFromServer()
+        await fetchOtherInfoFromServer(_.map(contactsRes, 'userId'))
     }
     EMClient.addEventHandler(LISTENNER_EVENT_NAME.connect, {
         onConnected: () => {

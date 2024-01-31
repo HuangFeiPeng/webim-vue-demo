@@ -24,7 +24,7 @@
             </van-cell-group>
         </div>
         <div class="contacts_main_box">
-            <van-index-bar :index-list="indexList">
+            <van-index-bar>
                 <div v-for="(val, key, index) in getSortedContacts" :key="index">
                     <van-index-anchor :index="key"></van-index-anchor>
                     <van-cell v-for="item in val" :key="item.hxId">
@@ -50,15 +50,15 @@ const defaultAvatarUrl = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
 const contactsStore = useContactsStore()
 //联系人源数据
 const contactsNums = computed(() => {
-    return Object.keys(contactsStore.contacts).length
+    return contactsStore.contactsList.length
 })
 //拼音排序后的联系人列表
 const getSortedContacts = computed(() => {
     return contactsStore.getSortPinyinFriendItem
 })
-const indexList = computed(() => {
-    return _.keys(contactsStore.getSortPinyinFriendItem)
-})
+// const indexList = computed(() => {
+//     return _.keys(contactsStore.getSortPinyinFriendItem)
+// })
 </script>
 
 <style lang="scss" scoped>

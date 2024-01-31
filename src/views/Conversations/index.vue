@@ -145,14 +145,14 @@ const defaultAvatarUrl = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
 const contactsStore = useContactsStore()
 const groupsStore = useGroupsStore()
 const mapConversationsInfo = computed(() => {
-    const contacts = contactsStore.contacts
+    const contactsProfile = contactsStore.contactsProfile
     const groups = groupsStore.groups
     return (conversationItem: ConversationListItem) => {
         const { conversationId, conversationType } = conversationItem
         if (conversationType === 'singleChat') {
             return {
-                name: contacts[conversationId]?.nickname || conversationId,
-                avatarUrl: contacts[conversationId]?.avatarurl || defaultAvatarUrl,
+                name: contactsProfile.get(conversationId)?.nickname || conversationId,
+                avatarUrl: contactsProfile.get(conversationId)?.avatarurl || defaultAvatarUrl,
             }
         }
         if (conversationType === 'groupChat') {
