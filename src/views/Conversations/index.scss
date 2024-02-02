@@ -10,14 +10,10 @@
     flex-direction: row;
     align-items: center;
     .avatar_box {
-        width: 92px;
-        height: 92px;
-        background: #000;
-        border-radius: 50%;
+        border-radius: 12px;
         img {
-            width: 92px;
-            height: 92px;
-            border-radius: 50%;
+            width: 100px;
+            height: 100px;
         }
     }
     .chat_infor_main {
@@ -60,13 +56,15 @@
                 margin-top: 20px;
             }
         }
-        .time {
-            // width: 60px;
-            height: 24px;
-            font-size: 24px;
-            font-weight: 400;
-            color: #999999;
-            line-height: 24px;
+        .right_content {
+            .time {
+                // width: 60px;
+                height: 24px;
+                font-size: 24px;
+                font-weight: 400;
+                color: #999999;
+                line-height: 24px;
+            }
         }
     }
 }

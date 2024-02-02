@@ -9,36 +9,11 @@
             :finished-text="$t('conversations.nomore')"
             @load="onLoadConversations"
         >
-            <!-- 系统通知逻辑 -->
-            <div
-                v-if="systemNotfiData"
-                class="van-haptics-feedback conversation_item_box"
-                @click="enterTheSystemNotfiPage"
-            >
-                <div class="avatar_box">
-                    <van-badge :content="unReadSystemNotfiCount" max="99" :show-zero="false">
-                        <img class="avatar_box_img" :src="informAvatar" alt="" />
-                    </van-badge>
-                </div>
-                <div class="chat_infor_main van-hairline--bottom">
-                    <div class="content">
-                        <p class="name">系统通知</p>
-                        <p class="last_msg">{{ systemNotfiData?.from }} :{{ systemNotfiData?.content }}</p>
-                    </div>
-                    <div class="time">{{ systemNotfiData?.time && handleLastMsgTime(systemNotfiData?.time) }}</div>
-                </div>
-            </div>
             <!-- 普通会话 -->
             <van-swipe-cell v-for="conversationItem in conversationList" :key="conversationItem.conversationId">
                 <div class="van-haptics-feedback conversation_item_box" @click="enterTheChatPage(conversationItem)">
                     <div class="avatar_box">
-                        <van-badge :content="conversationItem.unReadCount" max="99" :show-zero="false">
-                            <img
-                                class="avatar_box_img"
-                                :src="mapConversationsInfo(conversationItem)?.avatarUrl"
-                                alt=""
-                            />
-                        </van-badge>
+                        <img class="avatar_box_img" :src="mapConversationsInfo(conversationItem)?.avatarUrl" alt="" />
                     </div>
                     <div class="chat_infor_main van-hairline--bottom">
                         <div class="content">
@@ -47,7 +22,16 @@
                                 {{ handleLastMsgPreview(conversationItem) }}
                             </p>
                         </div>
-                        <div class="time">{{ handleLastMsgTime(conversationItem.lastMessage.time) }}</div>
+                        <div class="right_content">
+                            <div class="time">{{ handleLastMsgTime(conversationItem.lastMessage.time) }}</div>
+                            <van-badge
+                                :show-zero="false"
+                                :color="'#009EFF'"
+                                :content="conversationItem.unReadCount"
+                                max="99"
+                                :offset="[35, 10]"
+                            />
+                        </div>
                     </div>
                 </div>
                 <template #right>
@@ -77,24 +61,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, unref, toRaw, onMounted } from 'vue'
-import { useLocalStorage } from '@vueuse/core'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 /* pinia */
-import { useConversationStore, useContactsStore, useGroupsStore, useSystemNotfiStore } from '@/stores'
+import { useConversationStore, useContactsStore, useGroupsStore } from '@/stores'
 /* vue-router */
 import { useRouter } from 'vue-router'
 /* IM */
 import { EChatClient } from '@/EaseIM'
 import { LAST_MSG_PREVIEW } from '@/constants/im'
-import { useFetchConversation } from '@/EaseIM/hooks'
+
 import SearchInput from '@/components/SearchInput/index.vue'
 import { ConversationListItem } from '@/EaseIM/types/'
-import { SystemNotfiParams } from '@/EaseIM/types'
 import { emConversation } from '@/EaseIM/emApis'
 /* image */
-import emptyIcon from '@/assets/images/conversation/emptyicon@2x.png'
-import informAvatar from '@/assets/images/conversation/informAvatar.png'
+import defaultAvatar from '@/assets/avatar.png'
+import defaultGroupAvatar from '@/assets/groupAvatar.png'
 /* dayjs */
 import Dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -141,7 +123,6 @@ const deleteTheChat = (targetId: string) => {
     conversationStore.deleteConversation(targetId)
 }
 /* 映射会话对应的属性 */
-const defaultAvatarUrl = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
 const contactsStore = useContactsStore()
 const groupsStore = useGroupsStore()
 const mapConversationsInfo = computed(() => {
@@ -152,7 +133,7 @@ const mapConversationsInfo = computed(() => {
         if (conversationType === 'singleChat') {
             return {
                 name: contactsProfile.get(conversationId)?.nickname || conversationId,
-                avatarUrl: contactsProfile.get(conversationId)?.avatarurl || defaultAvatarUrl,
+                avatarUrl: contactsProfile.get(conversationId)?.avatarurl || defaultAvatar,
             }
         }
         if (conversationType === 'groupChat') {
@@ -162,7 +143,7 @@ const mapConversationsInfo = computed(() => {
                     groups[conversationId]?.groupInfo?.groupName ||
                     groups[conversationId]?.groupid ||
                     conversationId,
-                avatarUrl: defaultAvatarUrl,
+                avatarUrl: defaultGroupAvatar,
             }
         }
     }
@@ -183,25 +164,6 @@ const handleLastMsgPreview = computed(() => {
     }
 })
 
-/* 系统通知 */
-const systemNotfiStore = useSystemNotfiStore()
-//订阅该系统通知内的数据变化执行本地缓存
-systemNotfiStore.$subscribe(
-    (mutation, state) => {
-        // console.log('JSON.stringify(state.systemNotificationList)', JSON.stringify(state.systemNotificationList))
-        const storageData = JSON.stringify(state.systemNotificationList)
-        window.localStorage.setItem(`EM_${EChatClient.user}_INFORM`, storageData)
-    },
-    { detached: true },
-)
-const systemNotfiData = computed(() => {
-    const _index = systemNotfiStore.systemNotificationList.length - 1
-    return systemNotfiStore.systemNotificationList[_index]
-})
-//取出未读系统通知数
-const unReadSystemNotfiCount = computed(() => {
-    return systemNotfiStore.unReadNotifCount
-})
 /* 处理时间展示 */
 const { t } = useI18n()
 const handleLastMsgTime = computed(() => {
@@ -221,13 +183,6 @@ const handleLastMsgTime = computed(() => {
 
 /* 页面跳转 */
 const router = useRouter()
-//跳转至系统通知页面
-const enterTheSystemNotfiPage = () => {
-    router.push({
-        name: 'systemnotification',
-    })
-}
-
 //跳转至聊天页
 const enterTheChatPage = (chatParams: ConversationListItem) => {
     console.log('>>>>>>chatParams', chatParams)
