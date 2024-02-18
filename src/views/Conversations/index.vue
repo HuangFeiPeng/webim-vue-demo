@@ -10,7 +10,11 @@
             @load="onLoadConversations"
         >
             <!-- 普通会话 -->
-            <van-swipe-cell v-for="conversationItem in conversationList" :key="conversationItem.conversationId">
+            <van-swipe-cell
+                v-for="conversationItem in conversationList"
+                :key="conversationItem.conversationId"
+                v-on-long-press.prevent="onLongPressCallbackDirective"
+            >
                 <div class="van-haptics-feedback conversation_item_box" @click="enterTheChatPage(conversationItem)">
                     <div class="avatar_box">
                         <img class="avatar_box_img" :src="mapConversationsInfo(conversationItem)?.avatarUrl" alt="" />
@@ -57,6 +61,11 @@
                 </template>
             </van-swipe-cell>
         </van-list>
+        <van-action-sheet
+            v-model:show="longPressedDirective"
+            :actions="conversationActionsContent"
+            @select="onSelect"
+        />
     </div>
 </template>
 
@@ -68,7 +77,6 @@ import { useConversationStore, useContactsStore, useGroupsStore } from '@/stores
 /* vue-router */
 import { useRouter } from 'vue-router'
 /* IM */
-import { EChatClient } from '@/EaseIM'
 import { LAST_MSG_PREVIEW } from '@/constants/im'
 
 import SearchInput from '@/components/SearchInput/index.vue'
@@ -81,7 +89,7 @@ import defaultGroupAvatar from '@/assets/groupAvatar.png'
 import Dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 Dayjs.extend(relativeTime)
-
+import { vOnLongPress } from '@vueuse/components'
 /* 会话列表逻辑相关 */
 const conversationStore = useConversationStore()
 const conversationList = computed(() => {
@@ -193,6 +201,17 @@ const enterTheChatPage = (chatParams: ConversationListItem) => {
         // conversationStore.readedConversation(targetId, chatType)
     }
     router.push({ name: 'chat', query: { conversationId, conversationType } })
+}
+
+//会话长按事件
+const longPressedDirective = ref(false)
+const conversationActionsContent = ref([{ name: '标记已读' }])
+const onLongPressCallbackDirective = (e: PointerEvent) => {
+    console.log('>>>>>>触发长按事件', e)
+    longPressedDirective.value = true
+}
+const onSelect = (e: string) => {
+    console.log('>>>>>>触发选择事件', e)
 }
 </script>
 <style lang="scss" scoped>

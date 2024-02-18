@@ -24,5 +24,6 @@ module.exports = {
         // ],
         //完全关闭组件名校验
         'vue/multi-word-component-names': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
     },
 }

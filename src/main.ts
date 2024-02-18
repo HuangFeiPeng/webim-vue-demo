@@ -33,6 +33,7 @@ import {
     CheckboxGroup,
     Switch,
     Dialog,
+    ActionSheet,
 } from 'vant'
 import { Image as VanImage } from 'vant'
 /* i18n */
@@ -75,6 +76,7 @@ app.use(Icon)
     .use(CheckboxGroup)
     .use(Switch)
     .use(Dialog)
+    .use(ActionSheet)
 /* i18n */
 app.use(i18n)
 app.mount('#app')
