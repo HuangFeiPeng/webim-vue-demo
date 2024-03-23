@@ -64,7 +64,9 @@
         <van-action-sheet
             v-model:show="longPressedDirective"
             :actions="conversationActionsContent"
+            :cancel-text="$t('conversations.actionsSheet.cancel')"
             @select="onSelect"
+            @cancel="onCancel"
         />
     </div>
 </template>
@@ -72,6 +74,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { ActionSheetProps, ActionSheetAction } from 'vant'
 /* pinia */
 import { useConversationStore, useContactsStore, useGroupsStore } from '@/stores'
 /* vue-router */
@@ -203,9 +206,49 @@ const enterTheChatPage = (chatParams: ConversationListItem) => {
     router.push({ name: 'chat', query: { conversationId, conversationType } })
 }
 
+/* 会话长按操作面板 */
 //会话长按事件
 const longPressedDirective = ref(false)
-const conversationActionsContent = ref([{ name: '标记已读' }])
+//处理会话置顶操作
+const handlePinConversation = (data) => {
+    const { type } = data
+    if (type === 'pinConversation') {
+        console.log('>>>>>>置顶会话', data)
+        data.name = t('conversations.actionsSheet.unpinConversation')
+        data.type = 'unpinConversation'
+    }
+    if (type === 'unpinConversation') {
+        console.log('>>>>>>取消置顶会话', data)
+        data.name = t('conversations.actionsSheet.pinConversation')
+        data.type = 'pinConversation'
+    }
+}
+//会话列表删除操作
+const handleDeleteConversation = () => {
+    console.log('>>>>>>删除会话')
+}
+//会话已读未读操作
+const handleConversationUnRead = () => {
+    console.log('>>>>>>会话已读未读')
+}
+const conversationActionsContent = ref<ActionSheetAction>([
+    {
+        name: `${t('conversations.actionsSheet.pinConversation')}`,
+        color: '#009EFF',
+        type: 'pinConversation',
+        callback: handlePinConversation,
+    },
+    {
+        name: `${t('conversations.actionsSheet.deleteConversation')}`,
+        color: '#009EFF',
+        callback: handleDeleteConversation,
+    },
+    {
+        name: `${t('conversations.actionsSheet.conversationUnRead')}`,
+        color: '#009EFF',
+        callback: handleConversationUnRead,
+    },
+])
 const onLongPressCallbackDirective = (e: PointerEvent) => {
     console.log('>>>>>>触发长按事件', e)
     longPressedDirective.value = true
@@ -213,6 +256,11 @@ const onLongPressCallbackDirective = (e: PointerEvent) => {
 const onSelect = (e: string) => {
     console.log('>>>>>>触发选择事件', e)
 }
+const onCancel = () => (longPressedDirective.value = false)
+
+defineOptions({
+    name: 'Conversations',
+})
 </script>
 <style lang="scss" scoped>
 @import './index.scss';
